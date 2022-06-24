@@ -8,11 +8,10 @@ using System.Threading.Tasks;
 
 namespace Ipfs.Http
 {
-
     [TestClass]
     public class BitswapApiTest
     {
-        IpfsClient ipfs = TestFixture.Ipfs;
+        private IpfsClient ipfs = TestFixture.Ipfs;
 
         [TestMethod]
         public async Task Wants()

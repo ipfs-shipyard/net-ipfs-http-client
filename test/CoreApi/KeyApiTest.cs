@@ -1,19 +1,13 @@
-﻿using Ipfs.Http;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json.Linq;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Ipfs.Http
 {
-
     [TestClass]
     public class KeyApiTest
     {
-
         [TestMethod]
         public void Api_Exists()
         {

@@ -1,7 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
-using System;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Ipfs.Http

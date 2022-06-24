@@ -1,21 +1,16 @@
-﻿using Common.Logging;
-using Newtonsoft.Json;
+﻿using Ipfs.CoreApi;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Ipfs.CoreApi;
 
 namespace Ipfs.Http
 {
-
     class SwarmApi : ISwarmApi
     {
-        IpfsClient ipfs;
+        private IpfsClient ipfs;
 
         internal SwarmApi(IpfsClient ipfs)
         {
@@ -27,12 +22,13 @@ namespace Ipfs.Http
             var json = await ipfs.DoCommandAsync("swarm/addrs", cancel);
             return ((JObject)JObject.Parse(json)["Addrs"])
                 .Properties()
-                .Select(p => new Peer {
+                .Select(p => new Peer
+                {
                     Id = p.Name,
                     Addresses = ((JArray)p.Value)
                         .Select(a => MultiAddress.TryCreate((string)a))
                         .Where(ma => ma != null)
-        });
+                });
         }
 
         public async Task<IEnumerable<Peer>> PeersAsync(CancellationToken cancel = default(CancellationToken))
@@ -69,7 +65,7 @@ namespace Ipfs.Http
                     Latency = Duration.Parse((string)p["Latency"])
                 });
             }
-            
+
             // Hmmm. Another change we can handle
             throw new FormatException("Unknown response from 'swarm/peers");
         }

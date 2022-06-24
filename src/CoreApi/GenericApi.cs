@@ -1,21 +1,17 @@
-﻿using Newtonsoft.Json;
+﻿using Ipfs.CoreApi;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.IO;
-using System.Net;
-using System.Threading.Tasks;
 using System.Threading;
-using Ipfs.CoreApi;
-using Newtonsoft.Json.Linq;
+using System.Threading.Tasks;
 
 namespace Ipfs.Http
 {
     public partial class IpfsClient : IGenericApi
     {
-        const double TicksPerNanosecond = (double)TimeSpan.TicksPerMillisecond * 0.000001;
+        private const double TicksPerNanosecond = (double)TimeSpan.TicksPerMillisecond * 0.000001;
 
         /// <inheritdoc />
         public Task<Peer> IdAsync(MultiHash peer = null, CancellationToken cancel = default(CancellationToken))

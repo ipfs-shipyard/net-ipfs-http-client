@@ -1,11 +1,7 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.IO;
-using System.Net;
 using System.Threading;
 
 namespace Ipfs.Http
@@ -121,7 +117,7 @@ namespace Ipfs.Http
         public IEnumerator<MultiAddress> GetEnumerator()
         {
             Fetch();
-            return ((IEnumerable<MultiAddress>) peers).GetEnumerator();
+            return ((IEnumerable<MultiAddress>)peers).GetEnumerator();
         }
 
         /// <inheritdoc />

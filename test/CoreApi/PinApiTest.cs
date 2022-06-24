@@ -1,14 +1,9 @@
-﻿using Ipfs.Http;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Ipfs.Http
 {
-
     [TestClass]
     public class PinApiTest
     {

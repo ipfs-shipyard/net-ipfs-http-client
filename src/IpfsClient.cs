@@ -1,17 +1,15 @@
 ﻿using Common.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Reflection;
-using Newtonsoft.Json;
-using System.IO;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Net;
-using System.Net.Http.Headers;
-using System.Threading;
 using Ipfs.CoreApi;
+using Newtonsoft.Json;
+using System;
+using System.IO;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Reflection;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Ipfs.Http
 {
@@ -45,7 +43,7 @@ namespace Ipfs.Http
         ///   The environment variable "IpfsHttpApi" overrides this value.
         /// </remarks>
         public static Uri DefaultApiUri = new Uri(
-            Environment.GetEnvironmentVariable("IpfsHttpApi") 
+            Environment.GetEnvironmentVariable("IpfsHttpApi")
             ?? "http://localhost:5001");
 
         /// <summary>
@@ -95,7 +93,7 @@ namespace Ipfs.Http
         {
             ApiUri = new Uri(host);
         }
-        
+
         /// <summary>
         ///   The URL to the IPFS API server.  The default is "http://localhost:5001".
         /// </summary>

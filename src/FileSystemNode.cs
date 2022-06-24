@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ipfs.Http
 {
@@ -51,7 +47,8 @@ namespace Ipfs.Http
 
         /// <inheritdoc />
         [DataMember]
-        public IEnumerable<IFileSystemLink> Links {
+        public IEnumerable<IFileSystemLink> Links
+        {
             get
             {
                 if (links == null) GetInfo();
@@ -114,7 +111,7 @@ namespace Ipfs.Http
         /// <inheritdoc />
         public IFileSystemLink ToLink(string name = "")
         {
-            var link =  new FileSystemLink
+            var link = new FileSystemLink
             {
                 Name = string.IsNullOrWhiteSpace(name) ? Name : name,
                 Id = Id,

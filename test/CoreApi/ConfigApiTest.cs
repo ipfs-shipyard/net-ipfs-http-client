@@ -1,18 +1,15 @@
-﻿using Ipfs.Http;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Ipfs.Http
 {
-
     [TestClass]
     public class ConfigApiTest
     {
-        const string apiAddress = "/ip4/127.0.0.1/tcp/";
-        const string gatewayAddress = "/ip4/127.0.0.1/tcp/";
+        private const string apiAddress = "/ip4/127.0.0.1/tcp/";
+        private const string gatewayAddress = "/ip4/127.0.0.1/tcp/";
 
         [TestMethod]
         public void Get_Entire_Config()

@@ -1,21 +1,16 @@
-﻿using Ipfs.Http;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json.Linq;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Ipfs.Http
 {
-
     [TestClass]
     public class PubSubApiTest
     {
-
         [TestMethod]
         public void Api_Exists()
         {
@@ -93,7 +88,7 @@ namespace Ipfs.Http
             {
                 cs.Cancel();
             }
-         }
+        }
 
         [TestMethod]
         public async Task Subscribe_Mutiple_Messages()
@@ -131,7 +126,7 @@ namespace Ipfs.Http
             var ipfs = TestFixture.Ipfs;
             var topic = "net-ipfs-http-client-test-" + Guid.NewGuid().ToString();
             var cs = new CancellationTokenSource();
-            Action<IPublishedMessage> processMessage = (msg) => 
+            Action<IPublishedMessage> processMessage = (msg) =>
             {
                 Interlocked.Increment(ref messageCount);
             };

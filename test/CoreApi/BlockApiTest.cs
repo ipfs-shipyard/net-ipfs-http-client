@@ -8,13 +8,12 @@ using System.Threading.Tasks;
 
 namespace Ipfs.Http
 {
-
     [TestClass]
     public class BlockApiTest
     {
-        IpfsClient ipfs = TestFixture.Ipfs;
-        string id = "QmPv52ekjS75L4JmHpXVeuJ5uX2ecSfSZo88NSyxwA3rAQ";
-        byte[] blob = Encoding.UTF8.GetBytes("blorb");
+        private IpfsClient ipfs = TestFixture.Ipfs;
+        private string id = "QmPv52ekjS75L4JmHpXVeuJ5uX2ecSfSZo88NSyxwA3rAQ";
+        private byte[] blob = Encoding.UTF8.GetBytes("blorb");
 
         [TestMethod]
         public void Put_Bytes()

@@ -1,10 +1,10 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.IO;
-using System.Text;
+using System.Linq;
 using System.Runtime.Serialization;
+using System.Text;
 
 namespace Ipfs.Http
 {
@@ -30,7 +30,7 @@ namespace Ipfs.Http
             this.Sender = Convert.FromBase64String((string)o["from"]).ToBase58();
             this.SequenceNumber = Convert.FromBase64String((string)o["seqno"]);
             this.DataBytes = Convert.FromBase64String((string)o["data"]);
-            var topics = (JArray) (o["topicIDs"]);
+            var topics = (JArray)(o["topicIDs"]);
             this.Topics = topics.Select(t => (string)t);
         }
 
@@ -63,7 +63,7 @@ namespace Ipfs.Http
         [DataMember]
         public long Size
         {
-            get { return DataBytes.Length;  }
+            get { return DataBytes.Length; }
         }
         /// <summary>
         ///   Contents as a string.

@@ -1,16 +1,14 @@
-﻿using Ipfs.Http;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Linq;
 using System.IO;
+using System.Linq;
 
 namespace Ipfs.Http
 {
-    
     [TestClass]
     public partial class MerkleNodeTest
     {
-        const string IpfsInfo = "QmVtU7ths96fMgZ8YSZAbKghyieq7AjxNdcqyVzxTt3qVe";
+        private const string IpfsInfo = "QmVtU7ths96fMgZ8YSZAbKghyieq7AjxNdcqyVzxTt3qVe";
 
         [TestMethod]
         public void HashWithNamespace()
@@ -71,13 +69,13 @@ namespace Ipfs.Http
             var b = new MerkleNode("QmagNHT6twJRBZcGeviiGzHVTMbNnJZameLyL6T14GUHCS");
             MerkleNode nullNode = null;
 
-            #pragma warning disable 1718
+#pragma warning disable 1718
             Assert.IsTrue(a0 == a0);
             Assert.IsTrue(a0 == a1);
             Assert.IsFalse(a0 == b);
             Assert.IsFalse(a0 == null);
 
-            #pragma warning disable 1718
+#pragma warning disable 1718
             Assert.IsFalse(a0 != a0);
             Assert.IsFalse(a0 != a1);
             Assert.IsTrue(a0 != b);

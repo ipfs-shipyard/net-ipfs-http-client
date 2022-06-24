@@ -1,4 +1,5 @@
 ﻿using Common.Logging;
+using Ipfs.CoreApi;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -8,17 +9,14 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Ipfs.CoreApi;
 
 namespace Ipfs.Http
 {
-
     class FileSystemApi : IFileSystemApi
     {
-        static ILog log = LogManager.GetLogger<FileSystemApi>();
-
-        IpfsClient ipfs;
-        Lazy<DagNode> emptyFolder;
+        private static ILog log = LogManager.GetLogger<FileSystemApi>();
+        private IpfsClient ipfs;
+        private Lazy<DagNode> emptyFolder;
 
         internal FileSystemApi(IpfsClient ipfs)
         {
@@ -209,7 +207,7 @@ namespace Ipfs.Http
 
             if (length == 0)
                 length = int.MaxValue; // go-ipfs only accepts int lengths
-            return ipfs.DownloadAsync("cat", cancel, path, 
+            return ipfs.DownloadAsync("cat", cancel, path,
                 $"offset={offset}",
                 $"length={length}");
         }
