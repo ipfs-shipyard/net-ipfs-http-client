@@ -1,23 +1,18 @@
 ﻿using Common.Logging;
-using Newtonsoft.Json;
+using Ipfs.CoreApi;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Ipfs.CoreApi;
 
 namespace Ipfs.Http
 {
-
     class DhtApi : IDhtApi
     {
-        static ILog log = LogManager.GetLogger<DhtApi>();
-
-        IpfsClient ipfs;
+        private static ILog log = LogManager.GetLogger<DhtApi>();
+        private IpfsClient ipfs;
 
         internal DhtApi(IpfsClient ipfs)
         {
@@ -57,7 +52,7 @@ namespace Ipfs.Http
         }
 
         IEnumerable<Peer> ProviderFromStream(Stream stream, int limit = int.MaxValue)
-        { 
+        {
             using (var sr = new StreamReader(stream))
             {
                 var n = 0;
@@ -92,7 +87,7 @@ namespace Ipfs.Http
                     }
                 }
             }
-         }
+        }
     }
 
 }

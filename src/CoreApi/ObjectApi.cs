@@ -1,23 +1,19 @@
 ﻿using Common.Logging;
-using Newtonsoft.Json;
+using Ipfs.CoreApi;
 using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Ipfs.CoreApi;
 
 namespace Ipfs.Http
 {
-
     class ObjectApi : IObjectApi
     {
-        static ILog log = LogManager.GetLogger<ObjectApi>();
-
-        IpfsClient ipfs;
+        private static ILog log = LogManager.GetLogger<ObjectApi>();
+        private IpfsClient ipfs;
 
         internal ObjectApi(IpfsClient ipfs)
         {
@@ -32,7 +28,7 @@ namespace Ipfs.Http
         public async Task<DagNode> NewAsync(string template = null, CancellationToken cancel = default(CancellationToken))
         {
             var json = await ipfs.DoCommandAsync("object/new", cancel, template);
-            var hash = (string) (JObject.Parse(json)["Hash"]);
+            var hash = (string)(JObject.Parse(json)["Hash"]);
             return await GetAsync(hash);
         }
 

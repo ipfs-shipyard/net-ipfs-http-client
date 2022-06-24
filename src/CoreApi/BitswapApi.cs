@@ -1,18 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using Ipfs.CoreApi;
 using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Ipfs.CoreApi;
-using System.IO;
 
 namespace Ipfs.Http
 {
-
     class BitswapApi : IBitswapApi
     {
         IpfsClient ipfs;
@@ -33,7 +27,7 @@ namespace Ipfs.Http
             var keys = (JArray)(JObject.Parse(json)["Keys"]);
             // https://github.com/ipfs/go-ipfs/issues/5077
             return keys
-                .Select(k => 
+                .Select(k =>
                 {
                     if (k.Type == JTokenType.String)
                         return Cid.Decode(k.ToString());

@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Ipfs.Http
 {
@@ -9,7 +9,6 @@ namespace Ipfs.Http
     /// </summary>
     public static class ExceptionAssert
     {
-
         public static T Throws<T>(Action action, string expectedMessage = null) where T : Exception
         {
             try
@@ -44,6 +43,5 @@ namespace Ipfs.Http
         {
             return Throws<Exception>(action, expectedMessage);
         }
-
     }
 }

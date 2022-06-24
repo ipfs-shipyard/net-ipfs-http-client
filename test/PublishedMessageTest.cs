@@ -1,21 +1,19 @@
-﻿using Ipfs.Http;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Linq;
 using System.IO;
+using System.Linq;
 
 namespace Ipfs.Http
 {
-    
     [TestClass]
     public partial class PublishedMessageTest
     {
-        const string json = @"{
- ""from"":""EiDzOYdzT4BE42JXwxVM8Q19w6tx30Bp2N3T7tOH/a2nCw=="",
- ""data"":""aGVsbG8gd29ybGQ="",
- ""seqno"":""FPBVj+oTUug="",
- ""topicIDs"":[""net-ipfs-http-client-test""]
-}";
+        private const string json = @"{
+            ""from"":""EiDzOYdzT4BE42JXwxVM8Q19w6tx30Bp2N3T7tOH/a2nCw=="",
+            ""data"":""aGVsbG8gd29ybGQ="",
+            ""seqno"":""FPBVj+oTUug="",
+            ""topicIDs"":[""net-ipfs-http-client-test""]
+            }";
 
         [TestMethod]
         public void FromJson()
@@ -37,7 +35,8 @@ namespace Ipfs.Http
         public void Id_NotSupported()
         {
             var msg = new PublishedMessage(json);
-            ExceptionAssert.Throws<NotSupportedException>(() => {
+            ExceptionAssert.Throws<NotSupportedException>(() =>
+            {
                 var _ = msg.Id;
             });
         }

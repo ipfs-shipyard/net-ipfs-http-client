@@ -1,28 +1,22 @@
-﻿using Common.Logging;
+﻿using Ipfs.CoreApi;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Ipfs.CoreApi;
-using System.Globalization;
 
 namespace Ipfs.Http
 {
-
     class DagApi : IDagApi
     {
-        IpfsClient ipfs;
+        private IpfsClient ipfs;
 
         internal DagApi(IpfsClient ipfs)
         {
             this.ipfs = ipfs;
         }
-
 
         public async Task<Cid> PutAsync(
             JObject data,
@@ -49,11 +43,11 @@ namespace Ipfs.Http
         }
 
         public async Task<Cid> PutAsync(
-            object data, 
+            object data,
             string contentType = "dag-cbor",
             string multiHash = MultiHash.DefaultAlgorithmName,
             string encoding = MultiBase.DefaultAlgorithmName,
-            bool pin = true, 
+            bool pin = true,
             CancellationToken cancel = default(CancellationToken))
         {
             using (var ms = new MemoryStream(
@@ -83,7 +77,7 @@ namespace Ipfs.Http
         }
 
         public async Task<JObject> GetAsync(
-            Cid id, 
+            Cid id,
             CancellationToken cancel = default(CancellationToken))
         {
             var json = await ipfs.DoCommandAsync("dag/get", cancel, id);
@@ -92,7 +86,7 @@ namespace Ipfs.Http
 
 
         public async Task<JToken> GetAsync(
-            string path, 
+            string path,
             CancellationToken cancel = default(CancellationToken))
         {
             var json = await ipfs.DoCommandAsync("dag/get", cancel, path);

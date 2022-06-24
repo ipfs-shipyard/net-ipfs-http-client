@@ -1,5 +1,5 @@
 ﻿using Common.Logging;
-using Newtonsoft.Json;
+using Ipfs.CoreApi;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -8,16 +8,13 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Ipfs.CoreApi;
 
 namespace Ipfs.Http
 {
-
     class PubSubApi : IPubSubApi
     {
-        static ILog log = LogManager.GetLogger<PubSubApi>();
-
-        IpfsClient ipfs;
+        private static ILog log = LogManager.GetLogger<PubSubApi>();
+        private IpfsClient ipfs;
 
         internal PubSubApi(IpfsClient ipfs)
         {
@@ -39,7 +36,7 @@ namespace Ipfs.Http
             var result = JObject.Parse(json);
             var strings = result["Strings"] as JArray;
             if (strings == null) return new Peer[0];
-            return strings.Select(s => new Peer { Id = (string)s } );
+            return strings.Select(s => new Peer { Id = (string)s });
         }
 
         public Task PublishAsync(string topic, byte[] message, CancellationToken cancel = default(CancellationToken))
@@ -84,7 +81,7 @@ namespace Ipfs.Http
         void ProcessMessages(string topic, Action<PublishedMessage> handler, StreamReader sr, CancellationToken ct)
         {
             log.DebugFormat("Start listening for '{0}' messages", topic);
-                     
+
             // .Net needs a ReadLine(CancellationToken)
             // As a work-around, we register a function to close the stream
             ct.Register(() => sr.Dispose());

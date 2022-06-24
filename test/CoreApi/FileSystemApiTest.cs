@@ -1,5 +1,4 @@
-﻿using Ipfs.Http;
-using Ipfs.CoreApi;
+﻿using Ipfs.CoreApi;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;
@@ -13,7 +12,6 @@ namespace Ipfs.Http
     [TestClass]
     public class FileSystemApiTest
     {
-
         [TestMethod]
         public void AddText()
         {

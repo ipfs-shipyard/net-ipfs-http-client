@@ -1,13 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Ipfs.Http
 {
- 
     [TestClass]
     public class StatsApiTest
     {
@@ -20,6 +15,5 @@ namespace Ipfs.Http
             var bitswap = await ipfs.Stats.BitswapAsync();
             var repository = await ipfs.Stats.RepositoryAsync();
         }
-
     }
 }

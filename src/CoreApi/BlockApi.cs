@@ -1,18 +1,13 @@
-﻿using Newtonsoft.Json;
+﻿using Ipfs.CoreApi;
 using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Ipfs.CoreApi;
-using System.IO;
 
 namespace Ipfs.Http
 {
-
     class BlockApi : IBlockApi
     {
         IpfsClient ipfs;
@@ -41,7 +36,7 @@ namespace Ipfs.Http
             CancellationToken cancel = default(CancellationToken))
         {
             var options = new List<string>();
-            if (multiHash != MultiHash.DefaultAlgorithmName || 
+            if (multiHash != MultiHash.DefaultAlgorithmName ||
                 contentType != Cid.DefaultContentType ||
                 encoding != MultiBase.DefaultAlgorithmName)
             {

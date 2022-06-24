@@ -1,18 +1,14 @@
-﻿using Common.Logging;
-using Newtonsoft.Json;
+﻿using Ipfs.CoreApi;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Ipfs.CoreApi;
 
 namespace Ipfs.Http
 {
-    class KeyApi  : IKeyApi
+    class KeyApi : IKeyApi
     {
         /// <summary>
         ///   Information about a local key.
@@ -41,9 +37,9 @@ namespace Ipfs.Http
 
         public async Task<IKey> CreateAsync(string name, string keyType, int size, CancellationToken cancel = default(CancellationToken))
         {
-            return await ipfs.DoCommandAsync<KeyInfo>("key/gen", cancel, 
-                name, 
-                $"type={keyType}", 
+            return await ipfs.DoCommandAsync<KeyInfo>("key/gen", cancel,
+                name,
+                $"type={keyType}",
                 $"size={size}");
         }
 

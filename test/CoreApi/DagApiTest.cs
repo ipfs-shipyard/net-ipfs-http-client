@@ -1,7 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Ipfs.Http
@@ -12,6 +10,7 @@ namespace Ipfs.Http
         class Name
         {
             public string First { get; set; }
+
             public string Last { get; set; }
         }
 
@@ -30,7 +29,7 @@ namespace Ipfs.Http
             Assert.IsNotNull(actual);
             Assert.AreEqual(expected["a"], actual["a"]);
 
-            var value = (string) await ipfs.Dag.GetAsync(expectedId + "/a");
+            var value = (string)await ipfs.Dag.GetAsync(expectedId + "/a");
             Assert.AreEqual(expected["a"], value);
         }
 

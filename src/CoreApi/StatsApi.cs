@@ -1,21 +1,15 @@
-﻿using Common.Logging;
-using Newtonsoft.Json;
+﻿using Ipfs.CoreApi;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Ipfs.CoreApi;
 
 namespace Ipfs.Http
 {
 
     class StatApi : IStatsApi
     {
-        IpfsClient ipfs;
+        private IpfsClient ipfs;
 
         internal StatApi(IpfsClient ipfs)
         {

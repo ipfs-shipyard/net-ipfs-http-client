@@ -1,7 +1,4 @@
-﻿using Ipfs.Http;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -9,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace Ipfs.Http
 {
-
     [TestClass]
     public class ObjectApiTest
     {
-        IpfsClient ipfs = TestFixture.Ipfs;
+        private IpfsClient ipfs = TestFixture.Ipfs;
 
         [TestMethod]
         public async Task New_Template_Null()
@@ -85,7 +81,7 @@ namespace Ipfs.Http
             var alpha = new DagNode(adata);
             var beta = await ipfs.Object.PutAsync(bdata, new[] { alpha.ToLink() });
             var links = await ipfs.Object.LinksAsync(beta.Id);
-            Assert.AreEqual(beta.Links.Count(),links.Count());
+            Assert.AreEqual(beta.Links.Count(), links.Count());
             Assert.AreEqual(beta.Links.First().Id, links.First().Id);
             Assert.AreEqual(beta.Links.First().Name, links.First().Name);
             Assert.AreEqual(beta.Links.First().Size, links.First().Size);

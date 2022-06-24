@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard14;netstandard2;net45</TargetFrameworks>
+	<TargetFrameworks>netstandard2</TargetFrameworks>
     <AssemblyName>Ipfs.Http.Client</AssemblyName>
     <RootNamespace>Ipfs.Http</RootNamespace>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
@@ -14,16 +14,16 @@
     
     <!-- Nuget specs -->
     <PackageId>Ipfs.Http.Client</PackageId>
-    <Authors>Richard Schneider</Authors>
+    <Authors></Authors>
     <Title>IPFS HTTP Client</Title>
     <Description> Provides .Net client access to the InterPlanetary File System.</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes>https://github.com/richardschneider/net-ipfs-http-client/releases</PackageReleaseNotes>
-    <Copyright>© 2015-2019 Richard Schneider</Copyright>
+    <PackageReleaseNotes>https://github.com/ipfs-shipyard/net-ipfs-http-client/releases</PackageReleaseNotes>
+	<Copyright></Copyright>
     <PackageTags>ipfs peer-to-peer distributed file-system</PackageTags>
     <IncludeSymbols>True</IncludeSymbols>
-    <PackageProjectUrl>https://github.com/richardschneider/net-ipfs-http-client</PackageProjectUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/richardschneider/net-ipfs-core/master/doc/images/ipfs-cs-logo-64x64.png</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/ipfs-shipyard/net-ipfs-http-client</PackageProjectUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/ipfs-shipyard/net-ipfs-core/master/doc/images/ipfs-cs-logo-64x64.png</PackageIconUrl>
   </PropertyGroup>
 
   <ItemGroup>

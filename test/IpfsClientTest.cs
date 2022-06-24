@@ -1,12 +1,9 @@
-﻿using Ipfs.Http;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Net.Http;
 using System.Threading;
 
 namespace Ipfs.Http
 {
-    
     /// <summary>
     ///This is a test class for IpfsClientTest and is intended
     ///to contain all IpfsClientTest Unit Tests
