@@ -2,6 +2,7 @@
 using Ipfs.CoreApi;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -88,16 +89,25 @@ namespace Ipfs.Http
         /// <param name="host">
         ///   The URL of the API host.  For example "http://localhost:5001" or "http://ipv4.fiddler:5001".
         /// </param>
-        public IpfsClient(string host)
+        /// <param name="customHeaders">
+        ///   
+        /// </param>
+        public IpfsClient(string host, Dictionary<string, string> customHeaders = null)
             : this()
         {
             ApiUri = new Uri(host);
+            CustomHeaders = customHeaders;
         }
 
         /// <summary>
         ///   The URL to the IPFS API server.  The default is "http://localhost:5001".
         /// </summary>
         public Uri ApiUri { get; set; }
+
+        /// <summary>
+        ///   Custom headers for the HTTP requests. For example, the Authorization headers for nodes requesting one.
+        /// </summary>
+        public Dictionary<string, string> CustomHeaders { get; set; }
 
         /// <summary>
         ///   The value of HTTP User-Agent header sent to the API server. 
@@ -231,6 +241,11 @@ namespace Ipfs.Http
                             Timeout = System.Threading.Timeout.InfiniteTimeSpan
                         };
                         api.DefaultRequestHeaders.Add("User-Agent", UserAgent);
+
+                        if (CustomHeaders != null)
+                            foreach (KeyValuePair<string, string> header in CustomHeaders)
+                                api.DefaultRequestHeaders.Add(header.Key, header.Value);
+
                     }
                 }
             }
