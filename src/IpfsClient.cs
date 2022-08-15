@@ -87,10 +87,10 @@ namespace Ipfs.Http
         ///   default values
         /// </summary>
         /// <param name="host">
-        ///   The URL of the API host.  For example "http://localhost:5001" or "http://ipv4.fiddler:5001".
+        ///   The URL of the API host. For example "http://localhost:5001" or "http://ipv4.fiddler:5001".
         /// </param>
         /// <param name="customHeaders">
-        ///   
+        ///   Custom headers for the HTTP requests. For example, the Authorization headers for nodes requesting one.
         /// </param>
         public IpfsClient(string host, Dictionary<string, string> customHeaders = null)
             : this()
