@@ -1,8 +1,8 @@
 # net-ipfs-http-client
 
-[![Version](https://img.shields.io/nuget/v/Ipfs.Http.Client.svg)](https://www.nuget.org/packages/IpfsShipyard.Ipfs.Http.Client)
+[![Version](https://img.shields.io/nuget/v/IpfsShipyard.Ipfs.Http.Client.svg)](https://www.nuget.org/packages/IpfsShipyard.Ipfs.Http.Client)
 
-A .NET client library for managing IPFS using the [HTTP API](https://docs.ipfs.io/reference/api/http/). 
+An easy to use .NET library for the [IPFS HTTP Gateway API](https://ipfs.io/ipfs/Qmd4DDHRhQhTgE2ohQENj5fXPsfAPTAiFj4RiLjwDwSApX/reference/http/gateway/), and the [Kubo RPC API v0](https://ipfs.io/ipfs/Qmd4DDHRhQhTgE2ohQENj5fXPsfAPTAiFj4RiLjwDwSApX/reference/kubo/rpc/).
 
 ![](https://ipfs.io/ipfs/QmQJ68PFMDdAsgCZvA1UVzzn18asVcf7HVvCDgpjiSCAse)
 

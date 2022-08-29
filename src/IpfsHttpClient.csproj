@@ -1,25 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	<TargetFrameworks>netstandard2</TargetFrameworks>
-    <AssemblyName>Ipfs.Http.Client</AssemblyName>
+	<TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <AssemblyName>IpfsShipyard.Ipfs.Http.Client</AssemblyName>
     <RootNamespace>Ipfs.Http</RootNamespace>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <DebugType>full</DebugType>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
-    <!-- developer build is always 0.42 -->
-    <AssemblyVersion>0.42</AssemblyVersion>
-    <Version>0.42</Version>
+    <!-- https://semver.org/spec/v2.0.0.html -->
+    <Version>0.0.0</Version>
+    <AssemblyVersion>$(Version)</AssemblyVersion>
     
     <!-- Nuget specs -->
-    <PackageId>Ipfs.Http.Client</PackageId>
-    <Authors></Authors>
+    <PackageId>IpfsShipyard.Ipfs.Http.Client</PackageId>
+    <Authors>IPFS Shipyard, Arlo Godfrey, Richard Schneider</Authors>
     <Title>IPFS HTTP Client</Title>
-    <Description> Provides .Net client access to the InterPlanetary File System.</Description>
+    <Description>
+    Backed by the IPFS Shipyard and developer community. Picking up where Richard Schneider left off.
+    
+    An easy to use .NET library for the IPFS HTTP Gateway API, and the Kubo RPC API v0.</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageReleaseNotes>https://github.com/ipfs-shipyard/net-ipfs-http-client/releases</PackageReleaseNotes>
-	<Copyright></Copyright>
     <PackageTags>ipfs peer-to-peer distributed file-system</PackageTags>
     <IncludeSymbols>True</IncludeSymbols>
     <PackageProjectUrl>https://github.com/ipfs-shipyard/net-ipfs-http-client</PackageProjectUrl>
@@ -27,7 +29,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Ipfs.Core" Version="0.55.0" />
+    <PackageReference Include="IpfsShipyard.Ipfs.Core" Version="0.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 	  <PackageReference Include="System.Net.Http" Version="4.3.4" Condition="'$(TargetFramework)' == 'netstandard14'" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" Condition="'$(TargetFramework)' == 'net45'" />

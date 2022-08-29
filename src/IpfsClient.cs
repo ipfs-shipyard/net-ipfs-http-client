@@ -57,8 +57,10 @@ namespace Ipfs.Http
         public IpfsClient()
         {
             ApiUri = DefaultApiUri;
-            var version = typeof(IpfsClient).GetTypeInfo().Assembly.GetName().Version;
-            UserAgent = string.Format("net-ipfs/{0}.{1}", version.Major, version.Minor);
+
+            var assembly = typeof(IpfsClient).GetTypeInfo().Assembly;
+            var version = assembly.GetName().Version;
+            UserAgent = string.Format("{0}/{1}.{2}.{3}", assembly.GetName().Name, version.Major, version.Minor, version.Revision);
             TrustedPeers = new TrustedPeerCollection(this);
 
             Bootstrap = new BootstrapApi(this);
