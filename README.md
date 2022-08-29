@@ -1,52 +1,47 @@
 # net-ipfs-http-client
 
-[![build status](https://ci.appveyor.com/api/projects/status/github/richardschneider/net-ipfs-http-client?branch=master&svg=true)](https://ci.appveyor.com/project/richardschneider/net-ipfs-http-client) 
-[![Coverage Status](https://coveralls.io/repos/github/richardschneider/net-ipfs-http-client/badge.svg?branch=master)](https://coveralls.io/github/richardschneider/net-ipfs-http-client?branch=master)
-[![Version](https://img.shields.io/nuget/v/Ipfs.Http.Client.svg)](https://www.nuget.org/packages/Ipfs.Http.Client)
-[![docs](https://img.shields.io/badge/docs-latest-green.svg)](https://richardschneider.github.io/net-ipfs-http-client/articles/client.html)
+[![Version](https://img.shields.io/nuget/v/Ipfs.Http.Client.svg)](https://www.nuget.org/packages/IpfsShipyard.Ipfs.Http.Client)
 
-
-A .Net client library for managing IPFS using the [HTTP API](https://docs.ipfs.io/reference/api/http/) protocol. 
-More information, including the Class Reference, is on the [Project](https://richardschneider.github.io/net-ipfs-http-client/) web site.
+A .NET client library for managing IPFS using the [HTTP API](https://docs.ipfs.io/reference/api/http/). 
 
 ![](https://ipfs.io/ipfs/QmQJ68PFMDdAsgCZvA1UVzzn18asVcf7HVvCDgpjiSCAse)
 
 ## Features
 
-- Targets .NET Framework 4.5, .NET Standard 1.4 and .NET Standard 2.0
-- [Asynchronous I/O](https://richardschneider.github.io/net-ipfs-http-client/articles/async.html) to an IPFS server
-- Supports [cancellation](https://richardschneider.github.io/net-ipfs-http-client/articles/cancellation.html) of all requests to the IPFS Server
-- Requests that all responses are compressed
-- Comprehensive [documentation](https://richardschneider.github.io/net-ipfs-http-client/articles/client.html)
-- C# style access to the [ipfs core interface](https://richardschneider.github.io/net-ipfs-core/api/Ipfs.CoreApi.html)
-  - [Bitswap API](https://richardschneider.github.io/net-ipfs-core/api/Ipfs.CoreApi.IBitswapApi.html)
-  - [Block API](https://richardschneider.github.io/net-ipfs-core/api/Ipfs.CoreApi.IBlockApi.html)
-  - [Config API](https://richardschneider.github.io/net-ipfs-core/api/Ipfs.CoreApi.IConfigApi.html)
-  - [Dag API](https://richardschneider.github.io/net-ipfs-core/api/Ipfs.CoreApi.IDagApi.html)
-  - [Dht API](https://richardschneider.github.io/net-ipfs-core/api/Ipfs.CoreApi.IDhtApi.html)
-  - [Misc API](https://richardschneider.github.io/net-ipfs-core/api/Ipfs.CoreApi.IGenericApi.html)
-  - [FileSystem API](https://richardschneider.github.io/net-ipfs-core/api/Ipfs.CoreApi.IFileSystemApi.html)
-  - [Key API](https://richardschneider.github.io/net-ipfs-core/api/Ipfs.CoreApi.IKeyApi.html)
-  - [Name API](https://richardschneider.github.io/net-ipfs-core/api/Ipfs.CoreApi.INameApi.html)
-  - [Object API](https://richardschneider.github.io/net-ipfs-core/api/Ipfs.CoreApi.IObjectApi.html)
-  - [Pin API](https://richardschneider.github.io/net-ipfs-core/api/Ipfs.CoreApi.IPinApi.html)
-  - [PubSub API](https://richardschneider.github.io/net-ipfs-core/api/Ipfs.CoreApi.IPubSubApi.html)
-  - [Stats API](https://richardschneider.github.io/net-ipfs-core/api/Ipfs.CoreApi.IStatsApi.html)
-  - [Swarm API](https://richardschneider.github.io/net-ipfs-core/api/Ipfs.CoreApi.ISwarmApi.html)
+- Targets .NET Standard 2.0
+- Asynchronous I/O to an IPFS server
+- Supports request cancellation
+- Requests compressed responses
+- Documentation website coming soon™️
+- C# style access to the ipfs core interface
+  - Bitswap API
+  - Block API
+  - Config API
+  - Dag API
+  - Dht API
+  - Misc API
+  - FileSystem API
+  - Key API
+  - Name API
+  - Object API
+  - Pin API
+  - PubSub API
+  - Stats API
+  - Swarm API
 
 ## Getting started
 
-Published releases of IPFS API are available on [NuGet](https://www.nuget.org/packages/ipfs.http.client/).  To install, run the following command in the [Package Manager Console](https://docs.nuget.org/docs/start-here/using-the-package-manager-console).
+Published releases of IPFS API are available on [NuGet](https://www.nuget.org/packages/IpfsShipyard.Ipfs.Http.Client/).  To install, run the following command in the [Package Manager Console](https://docs.nuget.org/docs/start-here/using-the-package-manager-console).
 
-    PM> Install-Package Ipfs.Http.Client
+    PM> Install-Package IpfsShipyard.Ipfs.Http.Client
     
-Or using [dotnet](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet?tabs=netcore21)
+Or using [dotnet](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet)
 
-    > dotnet add package Ipfs.Http.Client
+    > dotnet add package IpfsShipyard.Ipfs.Http.Client
 
 ## IpfsClient
 
-Every feature of IPFS is a property of the [IpfsClient](https://richardschneider.github.io/net-ipfs-http-client/api/Ipfs.Http.IpfsClient.html).  The following example 
+Every feature of IPFS is a property of the IpfsClient).  The following example 
 uses `FileSystem` to read a text file
 
 ```csharp
@@ -59,8 +54,4 @@ string text = await ipfs.FileSystem.ReadAllTextAsync(filename);
 ```
 
 # License
-Copyright © 2015-2018 Richard Schneider (makaretu@gmail.com)
-
-The IPFS API library is licensed under the [MIT](http://www.opensource.org/licenses/mit-license.php "Read more about the MIT license form") license. Refer to the [LICENSE](https://github.com/richardschneider/net-ipfs-http-client/blob/master/LICENSE) file for more information.
-
-<a href="https://www.buymeacoffee.com/kmXOxKJ4E" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/yellow_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
+The IPFS API library is licensed under the [MIT](http://www.opensource.org/licenses/mit-license.php "Read more about the MIT license form") license. Refer to the [LICENSE](https://github.com/ipfs-shipyard/net-ipfs-http-client/blob/master/LICENSE) file for more information.
