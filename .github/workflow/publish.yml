@@ -24,9 +24,8 @@ jobs:
     # Pre-publish unit test runs is disabled.
     # The codebase is old, and many things are broken in the latest HTTP API.
     # It'll take some time before we fully fix all the issues.
-     - name: Test
-       run: dotnet test --no-build --verbosity normal -p:Configuration=Release
-       allow-failure: true
+    # - name: Test
+    #   run: dotnet test --no-build --verbosity normal -p:Configuration=Release
 
     - name: Publish to NuGet
       if: ${{github.ref == 'refs/heads/main'}}

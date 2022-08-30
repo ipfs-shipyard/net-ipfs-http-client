@@ -33,6 +33,6 @@ jobs:
       - name: dotnet build
         run: dotnet build /r 
 
-      - name: dotnet test
-        run: dotnet test
-        allow-failure: true
+      # - name: dotnet test
+      #  run: dotnet test
+      
