@@ -24,8 +24,9 @@ jobs:
     # Pre-publish unit test runs is disabled.
     # The codebase is old, and many things are broken in the latest HTTP API.
     # It'll take some time before we fully fix all the issues.
-    # - name: Test
-    #  run: dotnet test --no-build --verbosity normal -p:Configuration=Release
+     - name: Test
+       run: dotnet test --no-build --verbosity normal -p:Configuration=Release
+       continue-on-error: true
 
     - name: Publish to NuGet
       run: dotnet nuget push "/home/runner/work/net-ipfs-http-client/net-ipfs-http-client/src/bin/Release/IpfsShipyard.Ipfs.Http.Client.*.*.*.nupkg" --skip-duplicate --api-key ${{secrets.NUGET_KEY}} --source https://api.nuget.org/v3/index.json
