@@ -2,6 +2,7 @@
 using Ipfs.CoreApi;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -582,5 +583,10 @@ namespace Ipfs.Http
             throw new HttpRequestException(message);
         }
 
+        /// <inheritdoc />
+        public IAsyncEnumerable<PingResult> Ping(MultiHash peer, int count = 10, CancellationToken cancel = new CancellationToken()) => Generic.Ping(peer, count, cancel);
+
+        /// <inheritdoc />
+        public IAsyncEnumerable<PingResult> Ping(MultiAddress address, int count = 10, CancellationToken cancel = new CancellationToken()) => Generic.Ping(address, count, cancel);
     }
 }
