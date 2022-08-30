@@ -26,8 +26,9 @@ jobs:
     # It'll take some time before we fully fix all the issues.
      - name: Test
        run: dotnet test --no-build --verbosity normal -p:Configuration=Release
-       continue-on-error: true
+       allow-failure: true
 
     - name: Publish to NuGet
+      if: ${{github.ref == 'refs/heads/main'}}
       run: dotnet nuget push "/home/runner/work/net-ipfs-http-client/net-ipfs-http-client/src/bin/Release/IpfsShipyard.Ipfs.Http.Client.*.*.*.nupkg" --skip-duplicate --api-key ${{secrets.NUGET_KEY}} --source https://api.nuget.org/v3/index.json
       
