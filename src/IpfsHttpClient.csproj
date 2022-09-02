@@ -9,7 +9,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
     <!-- https://semver.org/spec/v2.0.0.html -->
-    <Version>0.0.0</Version>
+    <Version>0.0.1</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
 
     <!-- Nuget specs -->
@@ -21,7 +21,7 @@
     
     An easy to use .NET library for the IPFS HTTP Gateway API, and the Kubo RPC API v0.</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes>https://github.com/ipfs-shipyard/net-ipfs-http-client/releases</PackageReleaseNotes>
+    <PackageReleaseNotes> </PackageReleaseNotes>
     <PackageTags>ipfs peer-to-peer distributed file-system</PackageTags>
     <IncludeSymbols>True</IncludeSymbols>
     <PackageProjectUrl>https://github.com/ipfs-shipyard/net-ipfs-http-client</PackageProjectUrl>
