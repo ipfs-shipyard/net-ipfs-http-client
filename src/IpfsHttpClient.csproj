@@ -48,8 +48,7 @@
   <ItemGroup>
     <PackageReference Include="IpfsShipyard.Ipfs.Core" Version="0.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="System.Net.Http" Version="4.3.4" Condition="'$(TargetFramework)' == 'netstandard14'" />
-    <PackageReference Include="System.Net.Http" Version="4.3.4" Condition="'$(TargetFramework)' == 'net45'" />
+    <PackageReference Include="Multiformats.Base" Version="2.0.2"/>
   </ItemGroup>
 
 </Project>
