@@ -22,7 +22,7 @@ namespace Ipfs.Http
         public async Task Peers()
         {
             var ipfs = TestFixture.Ipfs;
-            var topic = "net-ipfs-http-client-test-" + Guid.NewGuid().ToString();
+            var topic = "net-ipfs-http-client-test-" + Guid.NewGuid();
             var cs = new CancellationTokenSource();
             try
             {
@@ -40,7 +40,7 @@ namespace Ipfs.Http
         public void Peers_Unknown_Topic()
         {
             var ipfs = TestFixture.Ipfs;
-            var topic = "net-ipfs-http-client-test-unknown" + Guid.NewGuid().ToString();
+            var topic = "net-ipfs-http-client-test-unknown" + Guid.NewGuid();
             var peers = ipfs.PubSub.PeersAsync(topic).Result.ToArray();
             Assert.AreEqual(0, peers.Length);
         }
@@ -49,7 +49,7 @@ namespace Ipfs.Http
         public async Task Subscribed_Topics()
         {
             var ipfs = TestFixture.Ipfs;
-            var topic = "net-ipfs-http-client-test-" + Guid.NewGuid().ToString();
+            var topic = "net-ipfs-http-client-test-" + Guid.NewGuid();
             var cs = new CancellationTokenSource();
             try
             {
@@ -71,7 +71,7 @@ namespace Ipfs.Http
         {
             messageCount = 0;
             var ipfs = TestFixture.Ipfs;
-            var topic = "net-ipfs-http-client-test-" + Guid.NewGuid().ToString();
+            var topic = "net-ipfs-http-client-test-" + Guid.NewGuid();
             var cs = new CancellationTokenSource();
             try
             {
@@ -96,7 +96,7 @@ namespace Ipfs.Http
             messageCount = 0;
             var messages = "hello world this is pubsub".Split();
             var ipfs = TestFixture.Ipfs;
-            var topic = "net-ipfs-http-client-test-" + Guid.NewGuid().ToString();
+            var topic = "net-ipfs-http-client-test-" + Guid.NewGuid();
             var cs = new CancellationTokenSource();
             try
             {
@@ -119,12 +119,12 @@ namespace Ipfs.Http
         }
 
         [TestMethod]
-        public async Task Multiple_Subscribe_Mutiple_Messages()
+        public async Task Multiple_Subscribe_Multiple_Messages()
         {
             messageCount = 0;
             var messages = "hello world this is pubsub".Split();
             var ipfs = TestFixture.Ipfs;
-            var topic = "net-ipfs-http-client-test-" + Guid.NewGuid().ToString();
+            var topic = "net-ipfs-http-client-test-" + Guid.NewGuid();
             var cs = new CancellationTokenSource();
             Action<IPublishedMessage> processMessage = (msg) =>
             {
@@ -155,7 +155,7 @@ namespace Ipfs.Http
         {
             messageCount1 = 0;
             var ipfs = TestFixture.Ipfs;
-            var topic = "net-ipfs-http-client-test-" + Guid.NewGuid().ToString();
+            var topic = "net-ipfs-http-client-test-" + Guid.NewGuid();
             var cs = new CancellationTokenSource();
             await ipfs.PubSub.SubscribeAsync(topic, msg =>
             {
@@ -177,7 +177,7 @@ namespace Ipfs.Http
             var messages = new List<IPublishedMessage>();
             var expected = new byte[] { 0, 1, 2, 4, (byte)'a', (byte)'b', 0xfe, 0xff };
             var ipfs = TestFixture.Ipfs;
-            var topic = "net-ipfs-http-client-test-" + Guid.NewGuid().ToString();
+            var topic = "net-ipfs-http-client-test-" + Guid.NewGuid();
             var cs = new CancellationTokenSource();
             try
             {
@@ -203,7 +203,7 @@ namespace Ipfs.Http
             var messages = new List<IPublishedMessage>();
             var expected = new byte[] { 0, 1, 2, 4, (byte)'a', (byte)'b', 0xfe, 0xff };
             var ipfs = TestFixture.Ipfs;
-            var topic = "net-ipfs-http-client-test-" + Guid.NewGuid().ToString();
+            var topic = "net-ipfs-http-client-test-" + Guid.NewGuid();
             var cs = new CancellationTokenSource();
             try
             {
