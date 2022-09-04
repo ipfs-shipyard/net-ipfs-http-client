@@ -1,5 +1,4 @@
-﻿using Common.Logging;
-using Ipfs.CoreApi;
+﻿using Ipfs.CoreApi;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -14,7 +13,6 @@ namespace Ipfs.Http
 {
     class FileSystemApi : IFileSystemApi
     {
-        private static ILog log = LogManager.GetLogger<FileSystemApi>();
         private IpfsClient ipfs;
         private Lazy<DagNode> emptyFolder;
 
@@ -96,8 +94,6 @@ namespace Ipfs.Http
                             Name = name,
                             IpfsClient = ipfs
                         };
-                        if (log.IsDebugEnabled)
-                            log.Debug("added " + fsn.Id + " " + fsn.Name);
                     }
                 }
             }
@@ -142,8 +138,6 @@ namespace Ipfs.Http
             var folder = emptyFolder.Value.AddLinks(links);
             var directory = await ipfs.Object.PutAsync(folder, cancel);
 
-            if (log.IsDebugEnabled)
-                log.Debug("added " + directory.Id + " " + Path.GetFileName(path));
             return new FileSystemNode
             {
                 Id = directory.Id,

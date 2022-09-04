@@ -1,5 +1,4 @@
-﻿using Common.Logging;
-using Ipfs.CoreApi;
+﻿using Ipfs.CoreApi;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.IO;
@@ -12,7 +11,6 @@ namespace Ipfs.Http
 {
     class ObjectApi : IObjectApi
     {
-        private static ILog log = LogManager.GetLogger<ObjectApi>();
         private IpfsClient ipfs;
 
         internal ObjectApi(IpfsClient ipfs)

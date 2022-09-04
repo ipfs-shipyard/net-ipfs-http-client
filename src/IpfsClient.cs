@@ -1,5 +1,4 @@
-﻿using Common.Logging;
-using Ipfs.CoreApi;
+﻿using Ipfs.CoreApi;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -29,7 +28,6 @@ namespace Ipfs.Http
     {
         const string unknownFilename = "unknown";
 
-        static ILog log = LogManager.GetLogger(typeof(IpfsClient));
         static object safe = new object();
         static HttpClient api = null;
 
@@ -273,16 +271,10 @@ namespace Ipfs.Http
         {
             var url = BuildCommand(command, arg, options);
 
-            if (log.IsDebugEnabled)
-                log.Debug("POST " + url);
-
             using (var response = await Api().PostAsync(url, null, cancel))
             {
                 await ThrowOnErrorAsync(response);
                 var body = await response.Content.ReadAsStringAsync();
-
-                if (log.IsDebugEnabled)
-                    log.Debug("RSP " + body);
 
                 return body;
             }
@@ -305,16 +297,10 @@ namespace Ipfs.Http
 
         internal async Task DoCommandAsync(Uri url, HttpContent content, CancellationToken cancel)
         {
-            if (log.IsDebugEnabled)
-                log.Debug("POST " + url);
-
             using (var response = await Api().PostAsync(url, new MultipartFormDataContent { { content, "\"file\"" } }, cancel))
             {
                 await ThrowOnErrorAsync(response);
                 var body = await response.Content.ReadAsStringAsync();
-
-                if (log.IsDebugEnabled)
-                    log.Debug("RSP " + body);
             }
         }
 
@@ -381,9 +367,6 @@ namespace Ipfs.Http
         {
             var url = BuildCommand(command, arg, options);
 
-            if (log.IsDebugEnabled)
-                log.Debug("POST " + url);
-
             var request = new HttpRequestMessage(HttpMethod.Post, url);
             var response = await Api().SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancel);
 
@@ -419,9 +402,6 @@ namespace Ipfs.Http
         {
             var url = BuildCommand(command, arg, options);
 
-            if (log.IsDebugEnabled)
-                log.Debug("GET " + url);
-
             var response = await Api().GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cancel);
             await ThrowOnErrorAsync(response);
 
@@ -454,9 +434,6 @@ namespace Ipfs.Http
         public async Task<byte[]> DownloadBytesAsync(string command, CancellationToken cancel, string arg = null, params string[] options)
         {
             var url = BuildCommand(command, arg, options);
-
-            if (log.IsDebugEnabled)
-                log.Debug("GET " + url);
 
             var response = await Api().GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cancel);
             await ThrowOnErrorAsync(response);
@@ -505,16 +482,11 @@ namespace Ipfs.Http
                 content.Add(streamContent, "file", name);
 
             var url = BuildCommand(command, null, options);
-            if (log.IsDebugEnabled)
-                log.Debug("POST " + url);
 
             using (var response = await Api().PostAsync(url, content, cancel))
             {
                 await ThrowOnErrorAsync(response);
                 var json = await response.Content.ReadAsStringAsync();
-
-                if (log.IsDebugEnabled)
-                    log.Debug("RSP " + json);
 
                 return json;
             }
@@ -558,9 +530,6 @@ namespace Ipfs.Http
 
             var url = BuildCommand(command, null, options);
 
-            if (log.IsDebugEnabled)
-                log.Debug("POST " + url);
-
             var response = await Api().PostAsync(url, content, cancel);
             await ThrowOnErrorAsync(response);
 
@@ -580,17 +549,11 @@ namespace Ipfs.Http
 
             var url = BuildCommand(command, null, options);
 
-            if (log.IsDebugEnabled)
-                log.Debug("POST " + url);
-
             using (var response = await Api().PostAsync(url, content, cancel))
             {
                 await ThrowOnErrorAsync(response);
 
                 var json = await response.Content.ReadAsStringAsync();
-
-                if (log.IsDebugEnabled)
-                    log.Debug("RSP " + json);
 
                 return json;
             }
@@ -616,16 +579,10 @@ namespace Ipfs.Http
             {
                 var error = "Invalid IPFS command: " + response.RequestMessage.RequestUri;
 
-                if (log.IsDebugEnabled)
-                    log.Debug("ERR " + error);
-
                 throw new HttpRequestException(error);
             }
 
             var body = await response.Content.ReadAsStringAsync();
-
-            if (log.IsDebugEnabled)
-                log.Debug("ERR " + body);
 
             string message = body;
 

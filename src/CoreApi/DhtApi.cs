@@ -1,5 +1,4 @@
-﻿using Common.Logging;
-using Ipfs.CoreApi;
+﻿using Ipfs.CoreApi;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -11,7 +10,6 @@ namespace Ipfs.Http
 {
     class DhtApi : IDhtApi
     {
-        private static ILog log = LogManager.GetLogger<DhtApi>();
         private IpfsClient ipfs;
 
         internal DhtApi(IpfsClient ipfs)
@@ -59,8 +57,6 @@ namespace Ipfs.Http
                 while (!sr.EndOfStream && n < limit)
                 {
                     var json = sr.ReadLine();
-                    if (log.IsDebugEnabled)
-                        log.DebugFormat("Provider {0}", json);
 
                     var r = JObject.Parse(json);
                     var id = (string)r["ID"];

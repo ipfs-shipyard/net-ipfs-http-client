@@ -44,8 +44,6 @@ namespace Ipfs.Http
                 while (!sr.EndOfStream)
                 {
                     var json = sr.ReadLine();
-                    if (log.IsDebugEnabled)
-                        log.DebugFormat("RSP {0}", json);
 
                     var r = JObject.Parse(json);
                     yield return new PingResult

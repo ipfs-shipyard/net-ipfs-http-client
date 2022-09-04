@@ -1,5 +1,4 @@
-﻿using Common.Logging;
-using Ipfs.CoreApi;
+﻿using Ipfs.CoreApi;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -14,7 +13,6 @@ namespace Ipfs.Http
 {
     class PubSubApi : IPubSubApi
     {
-        private static ILog log = LogManager.GetLogger<PubSubApi>();
         private IpfsClient ipfs;
 
         internal PubSubApi(IpfsClient ipfs)
@@ -83,8 +81,6 @@ namespace Ipfs.Http
 
         void ProcessMessages(string topic, Action<PublishedMessage> handler, StreamReader sr, CancellationToken ct)
         {
-            log.DebugFormat($"Start listening for '{topic}' messages");
-
             // .Net needs a ReadLine(CancellationToken)
             // As a work-around, we register a function to close the stream
             ct.Register(sr.Dispose);
@@ -95,9 +91,6 @@ namespace Ipfs.Http
                     var json = sr.ReadLine();
                     if (json == null)
                         break;
-
-                    if (log.IsDebugEnabled)
-                        log.DebugFormat("PubSub message {0}", json);
 
                     // go-ipfs 0.4.13 and earlier always send empty JSON
                     // as the first response.
@@ -110,18 +103,14 @@ namespace Ipfs.Http
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                // Do not report errors when cancelled.
-                if (!ct.IsCancellationRequested)
-                    log.Error(e);
+                // ignored
             }
             finally
             {
                 sr.Dispose();
             }
-
-            log.DebugFormat("Stop listening for '{0}' messages", topic);
         }
 
     }
