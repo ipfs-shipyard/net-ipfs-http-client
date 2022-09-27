@@ -9,7 +9,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
     <!-- https://semver.org/spec/v2.0.0.html -->
-    <Version>0.0.3</Version>
+    <Version>0.0.4</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
 
     <!-- Nuget specs -->
