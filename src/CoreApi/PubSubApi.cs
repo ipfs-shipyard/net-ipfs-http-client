@@ -45,7 +45,7 @@ namespace Ipfs.Http
         {
             var url = new StringBuilder();
             url.Append("/api/v0/pubsub/pub");
-            url.Append("?arg=u");
+            url.Append("?arg=");
             url.Append(Multibase.Encode(MultibaseEncoding.Base64Url, Encoding.UTF8.GetBytes(topic)));
 
             return ipfs.DoCommandAsync(new Uri(ipfs.ApiUri, url.ToString()), message, cancel);
@@ -55,7 +55,7 @@ namespace Ipfs.Http
         {
             var url = new StringBuilder();
             url.Append("/api/v0/pubsub/pub");
-            url.Append("?arg=u");
+            url.Append("?arg=");
             url.Append(Multibase.Encode(MultibaseEncoding.Base64Url, Encoding.UTF8.GetBytes(topic)));
 
             return ipfs.DoCommandAsync(new Uri(ipfs.ApiUri, url.ToString()), message, cancel);
@@ -65,7 +65,7 @@ namespace Ipfs.Http
         {
             var url = new StringBuilder();
             url.Append("/api/v0/pubsub/pub");
-            url.Append("?arg=u");
+            url.Append("?arg=");
             url.Append(Multibase.Encode(MultibaseEncoding.Base64Url, Encoding.UTF8.GetBytes(topic)));
 
             await ipfs.DoCommandAsync(new Uri(ipfs.ApiUri, url.ToString()), message, cancel);
@@ -73,7 +73,7 @@ namespace Ipfs.Http
 
         public async Task SubscribeAsync(string topic, Action<IPublishedMessage> handler, CancellationToken cancellationToken)
         {
-            var messageStream = await ipfs.PostDownloadAsync("pubsub/sub", cancellationToken, $"u{Multibase.Encode(MultibaseEncoding.Base64Url, Encoding.UTF8.GetBytes(topic))}");
+            var messageStream = await ipfs.PostDownloadAsync("pubsub/sub", cancellationToken, $"{Multibase.Encode(MultibaseEncoding.Base64Url, Encoding.UTF8.GetBytes(topic))}");
             var sr = new StreamReader(messageStream);
 
             _ = Task.Run(() => ProcessMessages(topic, handler, sr, cancellationToken), cancellationToken);
