@@ -198,7 +198,6 @@ namespace Ipfs.Http
                 opts.Add($"hash=${options.Hash}");
 
             await ipfs.Upload2Async("files/write", cancel, data, path, opts.ToArray());
-
         }
     }
 }
