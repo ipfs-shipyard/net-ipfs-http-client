@@ -60,7 +60,8 @@ namespace Ipfs.Http
                         Name = (string)l["Name"],
                         Id = (string)l["Hash"],
                         Size = (long)l["Size"],
-                        IsDirectory = (int)l["Type"] == 1
+                        IsDirectory = (int)l["Type"] == 1,
+                        IpfsClient = ipfs
                     })
                     .ToArray();
             }
