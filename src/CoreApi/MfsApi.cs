@@ -198,7 +198,14 @@ namespace Ipfs.Http
             if (options.Hash != null && options.Hash != MultiHash.DefaultAlgorithmName)
                 opts.Add($"hash=${options.Hash}");
 
-            await ipfs.Upload2Async("files/write", cancel, data, path, opts.ToArray());
+            if (string.IsNullOrEmpty(path) || !path.StartsWith("/"))
+                throw new ArgumentException("Argument path is required and must start with '/'.");
+            
+            var name=path.Split(new char[] { '/' }).Last();
+            if (string.IsNullOrEmpty(path) || !path.StartsWith("/"))
+                throw new ArgumentException("Argument path must specify a filename.");
+
+            await ipfs.Upload2Async("files/write", cancel, data, name, opts.ToArray());
         }
     }
 }
