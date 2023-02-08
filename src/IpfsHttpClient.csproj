@@ -9,7 +9,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
     <!-- https://semver.org/spec/v2.0.0.html -->
-    <Version>0.0.5</Version>
+    <Version>0.0.6</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
 
     <!-- Nuget specs -->
@@ -46,7 +46,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="IpfsShipyard.Ipfs.Core" Version="0.0.3" />
+    <PackageReference Include="IpfsShipyard.Ipfs.Core" Version="0.0.4" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Multiformats.Base" Version="2.0.2" />
