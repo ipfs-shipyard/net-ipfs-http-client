@@ -11,9 +11,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IpfsHttpClient", "src\IpfsHttpClient.csproj", "{F3C81C57-C283-4E07-B765-DEABCFB22136}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ipfs.Http", "Ipfs.Http\Ipfs.Http.csproj", "{F3C81C57-C283-4E07-B765-DEABCFB22136}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IpfsHttpClientTests", "test\IpfsHttpClientTests.csproj", "{B459FBC7-4A28-4170-AD83-7348A403407F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ipfs.Http.Tests", "Ipfs.Http.Tests\Ipfs.Http.Tests.csproj", "{B459FBC7-4A28-4170-AD83-7348A403407F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
