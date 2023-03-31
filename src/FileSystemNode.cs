@@ -8,19 +8,19 @@ namespace Ipfs.Http
     [DataContract]
     public class FileSystemNode : IFileSystemNode
     {
-        IpfsClient ipfsClient;
-        IEnumerable<IFileSystemLink> links;
+        IpfsClient? ipfsClient;
+        IEnumerable<IFileSystemLink>? links;
         long? size;
         bool? isDirectory;
 
         /// <inheritdoc />
-        public byte[] DataBytes
+        public byte[]? DataBytes
         {
             get
             {
                 using (var stream = DataStream)
                 {
-                    if (DataStream == null)
+                    if (stream is null)
                         return null;
 
                     using (var data = new MemoryStream())
@@ -33,7 +33,7 @@ namespace Ipfs.Http
         }
 
         /// <inheritdoc />
-        public Stream DataStream
+        public Stream? DataStream
         {
             get
             {
@@ -43,7 +43,7 @@ namespace Ipfs.Http
 
         /// <inheritdoc />
         [DataMember]
-        public Cid Id { get; set; }
+        public Cid? Id { get; set; }
 
         /// <inheritdoc />
         [DataMember]
@@ -51,8 +51,8 @@ namespace Ipfs.Http
         {
             get
             {
-                if (links == null) GetInfo();
-                return links;
+                if (links is null) GetInfo();
+                return links!;
             }
             set
             {
@@ -73,7 +73,7 @@ namespace Ipfs.Http
             get
             {
                 if (!size.HasValue) GetInfo();
-                return size.Value;
+                return size!.Value;
             }
             set
             {
@@ -94,7 +94,7 @@ namespace Ipfs.Http
             get
             {
                 if (!isDirectory.HasValue) GetInfo();
-                return isDirectory.Value;
+                return isDirectory!.Value;
             }
             set
             {
@@ -106,7 +106,7 @@ namespace Ipfs.Http
         ///   The file name of the IPFS node.
         /// </summary>
         [DataMember]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         /// <inheritdoc />
         public IFileSystemLink ToLink(string name = "")
@@ -130,11 +130,14 @@ namespace Ipfs.Http
         {
             get
             {
-                if (ipfsClient == null)
+                if (ipfsClient is null)
                 {
                     lock (this)
                     {
-                        ipfsClient = new IpfsClient();
+                        if (ipfsClient is null)
+                        {
+                            ipfsClient = new IpfsClient();
+                        }
                     }
                 }
                 return ipfsClient;

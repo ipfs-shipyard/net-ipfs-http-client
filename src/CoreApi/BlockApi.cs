@@ -10,14 +10,14 @@ namespace Ipfs.Http
 {
     class BlockApi : IBlockApi
     {
-        IpfsClient ipfs;
+        private readonly IpfsClient ipfs;
 
         internal BlockApi(IpfsClient ipfs)
         {
             this.ipfs = ipfs;
         }
 
-        public async Task<IDataBlock> GetAsync(Cid id, CancellationToken cancel = default(CancellationToken))
+        public async Task<IDataBlock> GetAsync(Cid id, CancellationToken cancel = default)
         {
             var data = await ipfs.DownloadBytesAsync("block/get", cancel, id);
             return new Block
@@ -33,7 +33,7 @@ namespace Ipfs.Http
             string multiHash = MultiHash.DefaultAlgorithmName,
             string encoding = MultiBase.DefaultAlgorithmName,
             bool pin = false,
-            CancellationToken cancel = default(CancellationToken))
+            CancellationToken cancel = default)
         {
             var options = new List<string>();
             if (multiHash != MultiHash.DefaultAlgorithmName ||
@@ -46,7 +46,7 @@ namespace Ipfs.Http
             }
             var json = await ipfs.UploadAsync("block/put", cancel, data, options.ToArray());
             var info = JObject.Parse(json);
-            Cid cid = (string)info["Key"];
+            Cid cid = (string?)info["Key"];
 
             if (pin)
             {
@@ -62,7 +62,7 @@ namespace Ipfs.Http
             string multiHash = MultiHash.DefaultAlgorithmName,
             string encoding = MultiBase.DefaultAlgorithmName,
             bool pin = false,
-            CancellationToken cancel = default(CancellationToken))
+            CancellationToken cancel = default)
         {
             var options = new List<string>();
             if (multiHash != MultiHash.DefaultAlgorithmName ||
@@ -73,9 +73,9 @@ namespace Ipfs.Http
                 options.Add($"format={contentType}");
                 options.Add($"cid-base={encoding}");
             }
-            var json = await ipfs.UploadAsync("block/put", cancel, data, null, options.ToArray());
+            var json = await ipfs.UploadAsync("block/put", cancel, data, name: null, options.ToArray());
             var info = JObject.Parse(json);
-            Cid cid = (string)info["Key"];
+            Cid cid = (string?)info["Key"];
 
             if (pin)
             {
@@ -85,29 +85,27 @@ namespace Ipfs.Http
             return cid;
         }
 
-        public async Task<IDataBlock> StatAsync(Cid id, CancellationToken cancel = default(CancellationToken))
+        public async Task<IDataBlock> StatAsync(Cid id, CancellationToken cancel = default)
         {
             var json = await ipfs.DoCommandAsync("block/stat", cancel, id);
             var info = JObject.Parse(json);
             return new Block
             {
-                Size = (long)info["Size"],
-                Id = (string)info["Key"]
+                Size = (long?)info["Size"] ?? 0,
+                Id = (string?)info["Key"]
             };
         }
 
-        public async Task<Cid> RemoveAsync(Cid id, bool ignoreNonexistent = false, CancellationToken cancel = default(CancellationToken))
+        public async Task<Cid?> RemoveAsync(Cid id, bool ignoreNonexistent = false, CancellationToken cancel = default)
         {
             var json = await ipfs.DoCommandAsync("block/rm", cancel, id, "force=" + ignoreNonexistent.ToString().ToLowerInvariant());
             if (json.Length == 0)
                 return null;
             var result = JObject.Parse(json);
-            var error = (string)result["Error"];
-            if (error != null)
+            var error = (string?)result["Error"];
+            if (error is not null)
                 throw new HttpRequestException(error);
-            return (Cid)(string)result["Hash"];
+            return (Cid)(string?)result["Hash"];
         }
-
     }
-
 }

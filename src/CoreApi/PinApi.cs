@@ -9,38 +9,41 @@ namespace Ipfs.Http
 {
     class PinApi : IPinApi
     {
-        private IpfsClient ipfs;
+        private readonly IpfsClient ipfs;
 
         internal PinApi(IpfsClient ipfs)
         {
             this.ipfs = ipfs;
         }
 
-        public async Task<IEnumerable<Cid>> AddAsync(string path, bool recursive = true, CancellationToken cancel = default(CancellationToken))
+        public async Task<IEnumerable<Cid>> AddAsync(string path, bool recursive = true, CancellationToken cancel = default)
         {
             var opts = "recursive=" + recursive.ToString().ToLowerInvariant();
             var json = await ipfs.DoCommandAsync("pin/add", cancel, path, opts);
-            return ((JArray)JObject.Parse(json)["Pins"])
-                .Select(p => (Cid)(string)p);
+            return ((JArray?)JObject.Parse(json)["Pins"])
+                .Select(p => (Cid)(string?)p);
         }
 
-        public async Task<IEnumerable<Cid>> ListAsync(CancellationToken cancel = default(CancellationToken))
+        public async Task<IEnumerable<Cid>> ListAsync(CancellationToken cancel = default)
         {
             var json = await ipfs.DoCommandAsync("pin/ls", cancel);
-            var keys = (JObject)(JObject.Parse(json)["Keys"]);
+            var keys = (JObject?)(JObject.Parse(json)["Keys"]);
+            if (keys is null)
+            {
+                return Enumerable.Empty<Cid>();
+            }
+
             return keys
                 .Properties()
                 .Select(p => (Cid)p.Name);
         }
 
-        public async Task<IEnumerable<Cid>> RemoveAsync(Cid id, bool recursive = true, CancellationToken cancel = default(CancellationToken))
+        public async Task<IEnumerable<Cid>> RemoveAsync(Cid id, bool recursive = true, CancellationToken cancel = default)
         {
             var opts = "recursive=" + recursive.ToString().ToLowerInvariant();
             var json = await ipfs.DoCommandAsync("pin/rm", cancel, id, opts);
-            return ((JArray)JObject.Parse(json)["Pins"])
-                .Select(p => (Cid)(string)p);
+            return ((JArray?)JObject.Parse(json)["Pins"])
+                .Select(p => (Cid)(string?)p);
         }
-
     }
-
 }

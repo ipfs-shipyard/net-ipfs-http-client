@@ -6,10 +6,10 @@
     public class FileSystemLink : IFileSystemLink
     {
         /// <inheritdoc />
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         /// <inheritdoc />
-        public Cid Id { get; set; }
+        public Cid? Id { get; set; }
 
         /// <inheritdoc />
         public long Size { get; set; }

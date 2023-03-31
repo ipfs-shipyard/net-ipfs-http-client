@@ -13,8 +13,8 @@ namespace Ipfs.Http
 {
     class FileSystemApi : IFileSystemApi
     {
-        private IpfsClient ipfs;
-        private Lazy<DagNode> emptyFolder;
+        private readonly IpfsClient ipfs;
+        private readonly Lazy<DagNode> emptyFolder;
 
         internal FileSystemApi(IpfsClient ipfs)
         {
@@ -22,7 +22,7 @@ namespace Ipfs.Http
             this.emptyFolder = new Lazy<DagNode>(() => ipfs.Object.NewDirectoryAsync().Result);
         }
 
-        public async Task<IFileSystemNode> AddFileAsync(string path, AddFileOptions options = null, CancellationToken cancel = default(CancellationToken))
+        public async Task<IFileSystemNode> AddFileAsync(string path, AddFileOptions? options = null, CancellationToken cancel = default)
         {
             using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
@@ -31,15 +31,14 @@ namespace Ipfs.Http
             }
         }
 
-        public Task<IFileSystemNode> AddTextAsync(string text, AddFileOptions options = null, CancellationToken cancel = default(CancellationToken))
+        public Task<IFileSystemNode> AddTextAsync(string text, AddFileOptions? options = null, CancellationToken cancel = default)
         {
             return AddAsync(new MemoryStream(Encoding.UTF8.GetBytes(text), false), "", options, cancel);
         }
 
-        public async Task<IFileSystemNode> AddAsync(Stream stream, string name = "", AddFileOptions options = null, CancellationToken cancel = default(CancellationToken))
+        public async Task<IFileSystemNode> AddAsync(Stream stream, string name = "", AddFileOptions? options = null, CancellationToken cancel = default)
         {
-            if (options == null)
-                options = new AddFileOptions();
+            options ??= new AddFileOptions();
             var opts = new List<string>();
             if (!options.Pin)
                 opts.Add("pin=false");
@@ -51,7 +50,7 @@ namespace Ipfs.Http
                 opts.Add("only-hash=true");
             if (options.Trickle)
                 opts.Add("trickle=true");
-            if (options.Progress != null)
+            if (options.Progress is not null)
                 opts.Add("progress=true");
             if (options.Hash != MultiHash.DefaultAlgorithmName)
                 opts.Add($"hash=${options.Hash}");
@@ -65,7 +64,7 @@ namespace Ipfs.Http
 
             // The result is a stream of LDJSON objects.
             // See https://github.com/ipfs/go-ipfs/issues/4852
-            FileSystemNode fsn = null;
+            FileSystemNode? fsn = null;
             using (var sr = new StreamReader(response))
             using (var jr = new JsonTextReader(sr) { SupportMultipleContent = true })
             {
@@ -78,8 +77,8 @@ namespace Ipfs.Http
                     {
                         options.Progress?.Report(new TransferProgress
                         {
-                            Name = (string)r["Name"],
-                            Bytes = (ulong)r["Bytes"]
+                            Name = (string?)r["Name"],
+                            Bytes = (ulong?)r["Bytes"] ?? 0
                         });
                     }
 
@@ -88,8 +87,8 @@ namespace Ipfs.Http
                     {
                         fsn = new FileSystemNode
                         {
-                            Id = (string)r["Hash"],
-                            Size = long.Parse((string)r["Size"]),
+                            Id = (string?)r["Hash"],
+                            Size = long.Parse((string?)r["Size"]),
                             IsDirectory = false,
                             Name = name,
                             IpfsClient = ipfs
@@ -102,9 +101,9 @@ namespace Ipfs.Http
             return fsn;
         }
 
-        public async Task<IFileSystemNode> AddDirectoryAsync(string path, bool recursive = true, AddFileOptions options = null, CancellationToken cancel = default(CancellationToken))
+        public async Task<IFileSystemNode> AddDirectoryAsync(string path, bool recursive = true, AddFileOptions? options = null, CancellationToken cancel = default)
         {
-            if (options == null)
+            if (options is null)
                 options = new AddFileOptions();
             options.Wrap = false;
 
@@ -147,7 +146,6 @@ namespace Ipfs.Http
                 Size = directory.Size,
                 IpfsClient = ipfs
             };
-
         }
 
         /// <summary>
@@ -163,7 +161,7 @@ namespace Ipfs.Http
         /// <returns>
         ///   The contents of the <paramref name="path"/> as a <see cref="string"/>.
         /// </returns>
-        public async Task<String> ReadAllTextAsync(string path, CancellationToken cancel = default(CancellationToken))
+        public async Task<String> ReadAllTextAsync(string path, CancellationToken cancel = default)
         {
             using (var data = await ReadFileAsync(path, cancel))
             using (var text = new StreamReader(data))
@@ -186,12 +184,12 @@ namespace Ipfs.Http
         /// <returns>
         ///   A <see cref="Stream"/> to the file contents.
         /// </returns>
-        public Task<Stream> ReadFileAsync(string path, CancellationToken cancel = default(CancellationToken))
+        public Task<Stream> ReadFileAsync(string path, CancellationToken cancel = default)
         {
             return ipfs.PostDownloadAsync("cat", cancel, path);
         }
 
-        public Task<Stream> ReadFileAsync(string path, long offset, long length = 0, CancellationToken cancel = default(CancellationToken))
+        public Task<Stream> ReadFileAsync(string path, long offset, long length = 0, CancellationToken cancel = default)
         {
             // https://github.com/ipfs/go-ipfs/issues/5380
             if (offset > int.MaxValue)
@@ -217,29 +215,29 @@ namespace Ipfs.Http
         ///   Is used to stop the task.  When cancelled, the <see cref="TaskCanceledException"/> is raised.
         /// </param>
         /// <returns></returns>
-        public async Task<IFileSystemNode> ListFileAsync(string path, CancellationToken cancel = default(CancellationToken))
+        public async Task<IFileSystemNode> ListFileAsync(string path, CancellationToken cancel = default)
         {
             var json = await ipfs.DoCommandAsync("file/ls", cancel, path);
             var r = JObject.Parse(json);
-            var hash = (string)r["Arguments"][path];
-            var o = (JObject)r["Objects"][hash];
+            var hash = (string?)r["Arguments"][path];
+            var o = (JObject?)r["Objects"][hash];
             var node = new FileSystemNode()
             {
-                Id = (string)o["Hash"],
-                Size = (long)o["Size"],
-                IsDirectory = (string)o["Type"] == "Directory",
+                Id = (string?)o["Hash"],
+                Size = (long?)o["Size"] ?? 0,
+                IsDirectory = (string?)o["Type"] == "Directory",
                 Links = new FileSystemLink[0],
                 IpfsClient = ipfs
             };
             var links = o["Links"] as JArray;
-            if (links != null)
+            if (links is not null)
             {
                 node.Links = links
                     .Select(l => new FileSystemLink()
                     {
-                        Name = (string)l["Name"],
-                        Id = (string)l["Hash"],
-                        Size = (long)l["Size"],
+                        Name = (string?)l["Name"],
+                        Id = (string?)l["Hash"],
+                        Size = (long?)l["Size"] ?? 0,
                     })
                     .ToArray();
             }
@@ -247,7 +245,7 @@ namespace Ipfs.Http
             return node;
         }
 
-        public Task<Stream> GetAsync(string path, bool compress = false, CancellationToken cancel = default(CancellationToken))
+        public Task<Stream> GetAsync(string path, bool compress = false, CancellationToken cancel = default)
         {
             return ipfs.PostDownloadAsync("get", cancel, path, $"compress={compress}");
         }

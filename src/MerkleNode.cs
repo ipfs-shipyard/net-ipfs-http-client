@@ -16,9 +16,9 @@ namespace Ipfs.Http
     {
         bool hasBlockStats;
         long blockSize;
-        string name;
-        IEnumerable<IMerkleLink> links;
-        IpfsClient ipfsClient;
+        string name = string.Empty;
+        IEnumerable<IMerkleLink>? links;
+        IpfsClient? ipfsClient;
 
         /// <summary>
         ///   Creates a new instance of the <see cref="MerkleNode"/> with the specified
@@ -28,13 +28,10 @@ namespace Ipfs.Http
         ///   The <see cref="Cid"/> of the node.
         /// </param>
         /// <param name="name">A name for the node.</param>
-        public MerkleNode(Cid id, string name = null)
+        public MerkleNode(Cid id, string? name = null)
         {
-            if (id == null)
-                throw new ArgumentNullException("id");
-
             Id = id;
-            Name = name;
+            Name = name ?? string.Empty;
         }
 
         /// <summary>
@@ -45,7 +42,7 @@ namespace Ipfs.Http
         ///   The string representation of a <see cref="Cid"/> of the node or "/ipfs/cid".
         /// </param>
         /// <param name="name">A name for the node.</param>
-        public MerkleNode(string path, string name = null)
+        public MerkleNode(string path, string? name = null)
         {
             if (string.IsNullOrWhiteSpace(path))
                 throw new ArgumentNullException("path");
@@ -54,7 +51,7 @@ namespace Ipfs.Http
                 path = path.Substring(6);
 
             Id = Cid.Decode(path);
-            Name = name;
+            Name = name ?? string.Empty;
         }
 
         /// <summary>
@@ -74,7 +71,7 @@ namespace Ipfs.Http
         {
             get
             {
-                if (ipfsClient == null)
+                if (ipfsClient is null)
                 {
                     lock (this)
                     {
@@ -134,7 +131,7 @@ namespace Ipfs.Http
         {
             get
             {
-                if (links == null)
+                if (links is null)
                 {
                     links = IpfsClient.Object.LinksAsync(Id).Result;
                 }
@@ -163,7 +160,7 @@ namespace Ipfs.Http
         }
 
         /// <inheritdoc />
-        public IMerkleLink ToLink(string name = null)
+        public IMerkleLink ToLink(string? name = null)
         {
             return new DagLink(name ?? Name, Id, BlockSize);
         }
@@ -192,26 +189,26 @@ namespace Ipfs.Http
         }
 
         /// <inheritdoc />
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             var that = obj as MerkleNode;
-            return that != null && this.Id == that.Id;
+            return that is not null && this.Id == that.Id;
         }
 
         /// <inheritdoc />
-        public bool Equals(MerkleNode that)
+        public bool Equals(MerkleNode? that)
         {
-            return that != null && this.Id == that.Id;
+            return that is not null && this.Id == that.Id;
         }
 
         /// <summary>
         ///  TODO
         /// </summary>
-        public static bool operator ==(MerkleNode a, MerkleNode b)
+        public static bool operator ==(MerkleNode? a, MerkleNode? b)
         {
             if (object.ReferenceEquals(a, b)) return true;
-            if (object.ReferenceEquals(a, null)) return false;
-            if (object.ReferenceEquals(b, null)) return false;
+            if (a is null) return false;
+            if (b is null) return false;
 
             return a.Equals(b);
         }
@@ -219,13 +216,9 @@ namespace Ipfs.Http
         /// <summary>
         ///  TODO
         /// </summary>
-        public static bool operator !=(MerkleNode a, MerkleNode b)
+        public static bool operator !=(MerkleNode? a, MerkleNode? b)
         {
-            if (object.ReferenceEquals(a, b)) return false;
-            if (object.ReferenceEquals(a, null)) return true;
-            if (object.ReferenceEquals(b, null)) return true;
-
-            return !a.Equals(b);
+            return !(a == b);
         }
 
         /// <inheritdoc />

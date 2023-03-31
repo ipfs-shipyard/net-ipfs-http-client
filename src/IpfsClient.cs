@@ -28,8 +28,8 @@ namespace Ipfs.Http
     {
         const string unknownFilename = "unknown";
 
-        static object safe = new object();
-        static HttpClient api = null;
+        static readonly object safe = new object();
+        static HttpClient? api = null;
 
         /// <summary>
         ///   The default URL to the IPFS HTTP API server.
@@ -168,12 +168,12 @@ namespace Ipfs.Http
         /// <inheritdoc />
         public IKeyApi Key { get; private set; }
 
-        Uri BuildCommand(string command, string arg = null, params string[] options)
+        Uri BuildCommand(string command, string? arg = null, params string[] options)
         {
             var url = "/api/v0/" + command;
             var q = new StringBuilder();
 
-            if (arg != null)
+            if (arg is not null)
             {
                 q.Append("&arg=");
                 q.Append(WebUtility.UrlEncode(arg));
@@ -267,7 +267,7 @@ namespace Ipfs.Http
         /// <exception cref="HttpRequestException">
         ///   When the IPFS server indicates an error.
         /// </exception>
-        public async Task<string> DoCommandAsync(string command, CancellationToken cancel, string arg = null, params string[] options)
+        public async Task<string> DoCommandAsync(string command, CancellationToken cancel, string? arg = null, params string[] options)
         {
             var url = BuildCommand(command, arg, options);
 
@@ -304,7 +304,6 @@ namespace Ipfs.Http
             }
         }
 
-
         /// <summary>
         ///   Perform an <see href="https://ipfs.io/docs/api/">IPFS API command</see> returning 
         ///   a specific <see cref="Type"/>.
@@ -335,10 +334,13 @@ namespace Ipfs.Http
         /// <exception cref="HttpRequestException">
         ///   When the IPFS server indicates an error.
         /// </exception>
-        public async Task<T> DoCommandAsync<T>(string command, CancellationToken cancel, string arg = null, params string[] options)
+        /// <exception cref="InvalidDataException">
+        ///   When the response body returned from the request cannot be parsed as valid JSON.
+        /// </exception>
+        public async Task<T> DoCommandAsync<T>(string command, CancellationToken cancel, string? arg = null, params string[] options)
         {
             var json = await DoCommandAsync(command, cancel, arg, options);
-            return JsonConvert.DeserializeObject<T>(json);
+            return JsonConvert.DeserializeObject<T>(json) ?? throw new InvalidDataException($"String could not be decoded as JSON: {json}");
         }
 
         /// <summary>
@@ -363,7 +365,7 @@ namespace Ipfs.Http
         /// <exception cref="HttpRequestException">
         ///   When the IPFS server indicates an error.
         /// </exception>
-        public async Task<Stream> PostDownloadAsync(string command, CancellationToken cancel, string arg = null, params string[] options)
+        public async Task<Stream> PostDownloadAsync(string command, CancellationToken cancel, string? arg = null, params string[] options)
         {
             var url = BuildCommand(command, arg, options);
 
@@ -398,7 +400,7 @@ namespace Ipfs.Http
         /// <exception cref="HttpRequestException">
         ///   When the IPFS server indicates an error.
         /// </exception>
-        public async Task<Stream> DownloadAsync(string command, CancellationToken cancel, string arg = null, params string[] options)
+        public async Task<Stream> DownloadAsync(string command, CancellationToken cancel, string? arg = null, params string[] options)
         {
             var url = BuildCommand(command, arg, options);
 
@@ -431,7 +433,7 @@ namespace Ipfs.Http
         /// <exception cref="HttpRequestException">
         ///   When the IPFS server indicates an error.
         /// </exception>
-        public async Task<byte[]> DownloadBytesAsync(string command, CancellationToken cancel, string arg = null, params string[] options)
+        public async Task<byte[]> DownloadBytesAsync(string command, CancellationToken cancel, string? arg = null, params string[] options)
         {
             var url = BuildCommand(command, arg, options);
 
@@ -469,7 +471,7 @@ namespace Ipfs.Http
         /// <exception cref="HttpRequestException">
         ///   When the IPFS server indicates an error.
         /// </exception>
-        public async Task<String> UploadAsync(string command, CancellationToken cancel, Stream data, string name, params string[] options)
+        public async Task<String> UploadAsync(string command, CancellationToken cancel, Stream data, string? name, params string[] options)
         {
             var content = new MultipartFormDataContent();
             var streamContent = new StreamContent(data);
@@ -519,7 +521,7 @@ namespace Ipfs.Http
         /// <exception cref="HttpRequestException">
         ///   When the IPFS server indicates an error.
         /// </exception>
-        public async Task<Stream> Upload2Async(string command, CancellationToken cancel, Stream data, string name, params string[] options)
+        public async Task<Stream> Upload2Async(string command, CancellationToken cancel, Stream data, string? name, params string[] options)
         {
             var content = new MultipartFormDataContent();
             var streamContent = new StreamContent(data);
@@ -589,7 +591,10 @@ namespace Ipfs.Http
             try
             {
                 var res = JsonConvert.DeserializeObject<dynamic>(body);
-                message = (string)res.Message;
+                if (res is not null)
+                {
+                    message = (string)res.Message;
+                }
             }
             catch { }
 

@@ -9,9 +9,9 @@ namespace Ipfs.Http
     {
         class Name
         {
-            public string First { get; set; }
+            public string? First { get; set; }
 
-            public string Last { get; set; }
+            public string? Last { get; set; }
         }
 
         [TestMethod]
@@ -29,7 +29,7 @@ namespace Ipfs.Http
             Assert.IsNotNull(actual);
             Assert.AreEqual(expected["a"], actual["a"]);
 
-            var value = (string)await ipfs.Dag.GetAsync(expectedId + "/a");
+            var value = (string?)await ipfs.Dag.GetAsync(expectedId + "/a");
             Assert.AreEqual(expected["a"], value);
         }
 
@@ -46,7 +46,7 @@ namespace Ipfs.Http
             Assert.AreEqual(expected.First, actual.First);
             Assert.AreEqual(expected.Last, actual.Last);
 
-            var value = (string)await ipfs.Dag.GetAsync(id.Encode() + "/Last");
+            var value = (string?)await ipfs.Dag.GetAsync(id.Encode() + "/Last");
             Assert.AreEqual(expected.Last, value);
         }
     }

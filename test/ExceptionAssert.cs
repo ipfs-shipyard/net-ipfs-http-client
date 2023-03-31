@@ -9,7 +9,7 @@ namespace Ipfs.Http
     /// </summary>
     public static class ExceptionAssert
     {
-        public static T Throws<T>(Action action, string expectedMessage = null) where T : Exception
+        public static T Throws<T>(Action action, string? expectedMessage = null) where T : Exception
         {
             try
             {
@@ -18,9 +18,9 @@ namespace Ipfs.Http
             catch (AggregateException e)
             {
                 var match = e.InnerExceptions.OfType<T>().FirstOrDefault();
-                if (match != null)
+                if (match is not null)
                 {
-                    if (expectedMessage != null)
+                    if (expectedMessage is not null)
                         Assert.AreEqual(expectedMessage, match.Message, "Wrong exception message.");
                     return match;
                 }
@@ -29,17 +29,17 @@ namespace Ipfs.Http
             }
             catch (T e)
             {
-                if (expectedMessage != null)
+                if (expectedMessage is not null)
                     Assert.AreEqual(expectedMessage, e.Message);
                 return e;
             }
             Assert.Fail("Exception of type {0} should be thrown.", typeof(T));
 
             //  The compiler doesn't know that Assert.Fail will always throw an exception
-            return null;
+            throw new Exception();
         }
 
-        public static Exception Throws(Action action, string expectedMessage = null)
+        public static Exception Throws(Action action, string? expectedMessage = null)
         {
             return Throws<Exception>(action, expectedMessage);
         }

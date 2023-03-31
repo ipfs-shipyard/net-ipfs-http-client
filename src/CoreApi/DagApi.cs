@@ -11,7 +11,7 @@ namespace Ipfs.Http
 {
     class DagApi : IDagApi
     {
-        private IpfsClient ipfs;
+        private readonly IpfsClient ipfs;
 
         internal DagApi(IpfsClient ipfs)
         {
@@ -24,7 +24,7 @@ namespace Ipfs.Http
             string multiHash = MultiHash.DefaultAlgorithmName,
             string encoding = MultiBase.DefaultAlgorithmName,
             bool pin = true,
-            CancellationToken cancel = default(CancellationToken))
+            CancellationToken cancel = default)
         {
             using (var ms = new MemoryStream())
             {
@@ -48,7 +48,7 @@ namespace Ipfs.Http
             string multiHash = MultiHash.DefaultAlgorithmName,
             string encoding = MultiBase.DefaultAlgorithmName,
             bool pin = true,
-            CancellationToken cancel = default(CancellationToken))
+            CancellationToken cancel = default)
         {
             using (var ms = new MemoryStream(
                 Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(data)),
@@ -64,36 +64,32 @@ namespace Ipfs.Http
             string multiHash = MultiHash.DefaultAlgorithmName,
             string encoding = MultiBase.DefaultAlgorithmName,
             bool pin = true,
-            CancellationToken cancel = default(CancellationToken))
+            CancellationToken cancel = default)
         {
             var json = await ipfs.UploadAsync("dag/put", cancel,
-                data, null,
+                data,
+                name: null,
                 $"format={contentType}",
                 $"pin={pin.ToString().ToLowerInvariant()}",
                 $"hash={multiHash}",
                 $"cid-base={encoding}");
             var result = JObject.Parse(json);
-            return (Cid)(string)result["Cid"]["/"];
+            return (Cid)(string?)result["Cid"]["/"];
         }
 
-        public async Task<JObject> GetAsync(
-            Cid id,
-            CancellationToken cancel = default(CancellationToken))
+        public async Task<JObject> GetAsync(Cid id, CancellationToken cancel = default)
         {
             var json = await ipfs.DoCommandAsync("dag/get", cancel, id);
             return JObject.Parse(json);
         }
 
-
-        public async Task<JToken> GetAsync(
-            string path,
-            CancellationToken cancel = default(CancellationToken))
+        public async Task<JToken> GetAsync(string path, CancellationToken cancel = default)
         {
             var json = await ipfs.DoCommandAsync("dag/get", cancel, path);
             return JToken.Parse(json);
         }
 
-        public async Task<T> GetAsync<T>(Cid id, CancellationToken cancel = default(CancellationToken))
+        public async Task<T> GetAsync<T>(Cid id, CancellationToken cancel = default)
         {
             var json = await ipfs.DoCommandAsync("dag/get", cancel, id);
             return JsonConvert.DeserializeObject<T>(json);

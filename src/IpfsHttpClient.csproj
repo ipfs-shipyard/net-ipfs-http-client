@@ -6,7 +6,6 @@
     <RootNamespace>Ipfs.Http</RootNamespace>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <DebugType>full</DebugType>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
     <!-- https://semver.org/spec/v2.0.0.html -->
     <Version>0.0.6</Version>

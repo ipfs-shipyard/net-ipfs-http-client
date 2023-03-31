@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Runtime.Serialization;
 
 namespace Ipfs.Http
@@ -11,11 +12,11 @@ namespace Ipfs.Http
 
         /// <inheritdoc />
         [DataMember]
-        public Cid Id { get; set; }
+        public Cid? Id { get; set; }
 
         /// <inheritdoc />
         [DataMember]
-        public byte[] DataBytes { get; set; }
+        public byte[] DataBytes { get; set; } = Array.Empty<byte>();
 
         /// <inheritdoc />
         public Stream DataStream

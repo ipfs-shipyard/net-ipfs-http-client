@@ -10,41 +10,41 @@ namespace Ipfs.Http
 {
     class DhtApi : IDhtApi
     {
-        private IpfsClient ipfs;
+        private readonly IpfsClient ipfs;
 
         internal DhtApi(IpfsClient ipfs)
         {
             this.ipfs = ipfs;
         }
 
-        public Task<Peer> FindPeerAsync(MultiHash id, CancellationToken cancel = default(CancellationToken))
+        public Task<Peer> FindPeerAsync(MultiHash id, CancellationToken cancel = default)
         {
             return ipfs.IdAsync(id, cancel);
         }
 
-        public async Task<IEnumerable<Peer>> FindProvidersAsync(Cid id, int limit = 20, Action<Peer> providerFound = null, CancellationToken cancel = default(CancellationToken))
+        public async Task<IEnumerable<Peer>> FindProvidersAsync(Cid id, int limit = 20, Action<Peer>? providerFound = null, CancellationToken cancel = default)
         {
             // TODO: providerFound action
             var stream = await ipfs.PostDownloadAsync("dht/findprovs", cancel, id, $"num-providers={limit}");
             return ProviderFromStream(stream, limit);
         }
 
-        public Task<byte[]> GetAsync(byte[] key, CancellationToken cancel = default(CancellationToken))
+        public Task<byte[]> GetAsync(byte[] key, CancellationToken cancel = default)
         {
             throw new NotImplementedException();
         }
 
-        public Task ProvideAsync(Cid cid, bool advertise = true, CancellationToken cancel = default(CancellationToken))
+        public Task ProvideAsync(Cid cid, bool advertise = true, CancellationToken cancel = default)
         {
             throw new NotImplementedException();
         }
 
-        public Task PutAsync(byte[] key, out byte[] value, CancellationToken cancel = default(CancellationToken))
+        public Task PutAsync(byte[] key, out byte[] value, CancellationToken cancel = default)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> TryGetAsync(byte[] key, out byte[] value, CancellationToken cancel = default(CancellationToken))
+        public Task<bool> TryGetAsync(byte[] key, out byte[] value, CancellationToken cancel = default)
         {
             throw new NotImplementedException();
         }
@@ -59,21 +59,21 @@ namespace Ipfs.Http
                     var json = sr.ReadLine();
 
                     var r = JObject.Parse(json);
-                    var id = (string)r["ID"];
-                    if (id != String.Empty)
+                    var id = (string?)r["ID"];
+                    if (id != string.Empty)
                     {
                         ++n;
                         yield return new Peer { Id = new MultiHash(id) };
                     }
                     else
                     {
-                        var responses = (JArray)r["Responses"];
-                        if (responses != null)
+                        var responses = (JArray?)r["Responses"];
+                        if (responses is not null)
                         {
                             foreach (var response in responses)
                             {
-                                var rid = (string)response["ID"];
-                                if (rid != String.Empty)
+                                var rid = (string?)response["ID"];
+                                if (rid != string.Empty)
                                 {
                                     ++n;
                                     yield return new Peer { Id = new MultiHash(rid) };
@@ -85,5 +85,4 @@ namespace Ipfs.Http
             }
         }
     }
-
 }
