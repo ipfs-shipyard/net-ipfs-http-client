@@ -87,7 +87,7 @@ namespace Ipfs.Http
                     {
                         fsn = new FileSystemNode
                         {
-                            Id = (string?)r["Hash"],
+                            Id = (string)r["Hash"]!,
                             Size = long.Parse((string?)r["Size"]),
                             IsDirectory = false,
                             Name = name,
@@ -97,14 +97,21 @@ namespace Ipfs.Http
                 }
             }
 
-            fsn.IsDirectory = options.Wrap;
+            if (fsn is not null)
+            {
+                fsn.IsDirectory = options.Wrap;
+            }
+            else
+            {
+                throw new InvalidDataException("Returned JSON did not contain an added file record");
+            }
+
             return fsn;
         }
 
         public async Task<IFileSystemNode> AddDirectoryAsync(string path, bool recursive = true, AddFileOptions? options = null, CancellationToken cancel = default)
         {
-            if (options is null)
-                options = new AddFileOptions();
+            options ??= new AddFileOptions();
             options.Wrap = false;
 
             // Add the files and sub-directories.
@@ -214,16 +221,16 @@ namespace Ipfs.Http
         /// <param name="cancel">
         ///   Is used to stop the task.  When cancelled, the <see cref="TaskCanceledException"/> is raised.
         /// </param>
-        /// <returns></returns>
+        /// <returns>A <see cref="IFileSystemNode"/> </returns>
         public async Task<IFileSystemNode> ListFileAsync(string path, CancellationToken cancel = default)
         {
             var json = await ipfs.DoCommandAsync("file/ls", cancel, path);
             var r = JObject.Parse(json);
-            var hash = (string?)r["Arguments"][path];
-            var o = (JObject?)r["Objects"][hash];
-            var node = new FileSystemNode()
+            var hash = (string)r["Arguments"]![path]!;
+            var o = (JObject)r["Objects"]![hash]!;
+            var node = new FileSystemNode
             {
-                Id = (string?)o["Hash"],
+                Id = (string)o["Hash"]!,
                 Size = (long?)o["Size"] ?? 0,
                 IsDirectory = (string?)o["Type"] == "Directory",
                 Links = new FileSystemLink[0],
@@ -233,10 +240,9 @@ namespace Ipfs.Http
             if (links is not null)
             {
                 node.Links = links
-                    .Select(l => new FileSystemLink()
+                    .Select(l => new FileSystemLink((string)l["Hash"]!)
                     {
                         Name = (string?)l["Name"],
-                        Id = (string?)l["Hash"],
                         Size = (long?)l["Size"] ?? 0,
                     })
                     .ToArray();

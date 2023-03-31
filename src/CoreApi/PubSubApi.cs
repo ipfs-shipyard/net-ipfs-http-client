@@ -1,13 +1,13 @@
-﻿using Ipfs.CoreApi;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Ipfs.CoreApi;
 using Multiformats.Base;
+using Newtonsoft.Json.Linq;
 
 namespace Ipfs.Http
 {
@@ -26,7 +26,7 @@ namespace Ipfs.Http
             var result = JObject.Parse(json);
             var strings = result["Strings"] as JArray;
             if (strings is null) return Enumerable.Empty<string>();
-            return strings.Select(s => (string)s);
+            return strings.Select(s => (string)s!);
         }
 
         public async Task<IEnumerable<Peer>> PeersAsync(string? topic = null, CancellationToken cancel = default)
@@ -36,9 +36,11 @@ namespace Ipfs.Http
             var strings = result["Strings"] as JArray;
 
             if (strings is null)
+            {
                 return Enumerable.Empty<Peer>();
+            }
 
-            return strings.Select(s => new Peer { Id = (string?)s });
+            return strings.Select(s => new Peer { Id = (string)s! });
         }
 
         public Task PublishAsync(string topic, byte[] message, CancellationToken cancel = default)

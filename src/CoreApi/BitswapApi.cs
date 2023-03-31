@@ -32,7 +32,7 @@ namespace Ipfs.Http
                     if (k.Type == JTokenType.String)
                         return Cid.Decode(k.ToString());
                     var obj = (JObject)k;
-                    return Cid.Decode(obj["/"].ToString());
+                    return Cid.Decode(obj["/"]!.ToString());
                 });
         }
 
@@ -43,11 +43,11 @@ namespace Ipfs.Http
 
         public async Task<BitswapLedger> LedgerAsync(Peer peer, CancellationToken cancel = default)
         {
-            var json = await ipfs.DoCommandAsync("bitswap/ledger", cancel, peer.Id.ToString());
+            var json = await ipfs.DoCommandAsync("bitswap/ledger", cancel, peer.Id?.ToString());
             var o = JObject.Parse(json);
             return new BitswapLedger
             {
-                Peer = (string?)o["Peer"],
+                Peer = (string)o["Peer"]!,
                 DataReceived = (ulong?)o["Sent"] ?? 0,
                 DataSent = (ulong?)o["Recv"] ?? 0,
                 BlocksExchanged = (ulong?)o["Exchanged"] ?? 0,

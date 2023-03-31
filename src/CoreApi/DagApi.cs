@@ -74,7 +74,7 @@ namespace Ipfs.Http
                 $"hash={multiHash}",
                 $"cid-base={encoding}");
             var result = JObject.Parse(json);
-            return (Cid)(string?)result["Cid"]["/"];
+            return (Cid)(string)result["Cid"]!["/"]!;
         }
 
         public async Task<JObject> GetAsync(Cid id, CancellationToken cancel = default)
@@ -89,7 +89,7 @@ namespace Ipfs.Http
             return JToken.Parse(json);
         }
 
-        public async Task<T> GetAsync<T>(Cid id, CancellationToken cancel = default)
+        public async Task<T?> GetAsync<T>(Cid id, CancellationToken cancel = default)
         {
             var json = await ipfs.DoCommandAsync("dag/get", cancel, id);
             return JsonConvert.DeserializeObject<T>(json);

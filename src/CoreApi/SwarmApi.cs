@@ -38,8 +38,9 @@ namespace Ipfs.Http
                 {
                     Id = p.Name,
                     Addresses = ((JArray)p.Value)
-                        .Select(a => MultiAddress.TryCreate((string?)a))
+                        .Select(a => MultiAddress.TryCreate((string)a!))
                         .Where(ma => ma is not null)
+                        .Cast<MultiAddress>()
                 });
         }
 
@@ -55,8 +56,8 @@ namespace Ipfs.Http
                 return strings
                    .Select(s =>
                    {
-                       var parts = ((string?)s)?.Split(' ');
-                       var address = new MultiAddress(parts?[0]);
+                       var parts = ((string)s)!.Split(' ');
+                       var address = new MultiAddress(parts[0]);
                        return new Peer
                        {
                            Id = address.PeerId,
@@ -72,9 +73,9 @@ namespace Ipfs.Http
             {
                 return peers.Select(p => new Peer
                 {
-                    Id = (string?)p["Peer"],
+                    Id = (string)p["Peer"]!,
                     ConnectedAddress = new MultiAddress((string?)p["Addr"] + "/ipfs/" + (string?)p["Peer"]),
-                    Latency = Duration.Parse((string?)p["Latency"])
+                    Latency = Duration.Parse((string?)p["Latency"] ?? "0")
                 });
             }
 
@@ -100,7 +101,7 @@ namespace Ipfs.Http
             var a = addrs.FirstOrDefault();
             if (a is null)
                 return null;
-            return new MultiAddress((string?)a);
+            return new MultiAddress((string)a!);
         }
 
         public async Task<IEnumerable<MultiAddress>> ListAddressFiltersAsync(bool persist = false, CancellationToken cancel = default)
@@ -117,10 +118,11 @@ namespace Ipfs.Http
             }
 
             if (addrs is null)
-                return new MultiAddress[0];
+                return Enumerable.Empty<MultiAddress>();
             return addrs
-                .Select(a => MultiAddress.TryCreate((string?)a))
-                .Where(ma => ma is not null);
+                .Select(a => MultiAddress.TryCreate((string)a!))
+                .Where(ma => ma is not null)
+                .Cast<MultiAddress>();
         }
 
         public async Task<MultiAddress?> RemoveAddressFilterAsync(MultiAddress address, bool persist = false, CancellationToken cancel = default)
@@ -131,7 +133,7 @@ namespace Ipfs.Http
             var a = addrs.FirstOrDefault();
             if (a is null)
                 return null;
-            return new MultiAddress((string?)a);
+            return new MultiAddress((string)a!);
         }
     }
 }

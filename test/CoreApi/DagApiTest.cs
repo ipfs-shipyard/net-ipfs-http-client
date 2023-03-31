@@ -43,7 +43,7 @@ namespace Ipfs.Http
 
             var actual = await ipfs.Dag.GetAsync<Name>(id);
             Assert.IsNotNull(actual);
-            Assert.AreEqual(expected.First, actual.First);
+            Assert.AreEqual(expected.First, actual!.First);
             Assert.AreEqual(expected.Last, actual.Last);
 
             var value = (string?)await ipfs.Dag.GetAsync(id.Encode() + "/Last");

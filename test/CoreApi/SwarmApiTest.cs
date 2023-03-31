@@ -60,9 +60,10 @@ namespace Ipfs.Http
             // tests that a connection can be made to at least one peer.
             foreach (var peer in peers.Take(2))
             {
+                Assert.IsNotNull(peer.ConnectedAddress);
                 try
                 {
-                    await ipfs.Swarm.ConnectAsync(peer.ConnectedAddress);
+                    await ipfs.Swarm.ConnectAsync(peer.ConnectedAddress!);
                     return;
                 }
                 catch (Exception)

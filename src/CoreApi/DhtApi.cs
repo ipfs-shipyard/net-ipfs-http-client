@@ -60,10 +60,10 @@ namespace Ipfs.Http
 
                     var r = JObject.Parse(json);
                     var id = (string?)r["ID"];
-                    if (id != string.Empty)
+                    if (!string.IsNullOrEmpty(id))
                     {
                         ++n;
-                        yield return new Peer { Id = new MultiHash(id) };
+                        yield return new Peer { Id = new MultiHash(id!) };
                     }
                     else
                     {
@@ -73,10 +73,10 @@ namespace Ipfs.Http
                             foreach (var response in responses)
                             {
                                 var rid = (string?)response["ID"];
-                                if (rid != string.Empty)
+                                if (!string.IsNullOrEmpty(rid))
                                 {
                                     ++n;
-                                    yield return new Peer { Id = new MultiHash(rid) };
+                                    yield return new Peer { Id = new MultiHash(rid!) };
                                 }
                             }
                         }

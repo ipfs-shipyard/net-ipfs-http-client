@@ -8,24 +8,23 @@ namespace Ipfs.Http
     [DataContract]
     public class Block : IDataBlock
     {
-        long? size;
+        private long? size;
+        private Cid? id;
 
         /// <inheritdoc />
         [DataMember]
-        public Cid? Id { get; set; }
+        public Cid Id
+        {
+            get => id ?? throw new InvalidDataException("Value mus be initialized");
+            set => id = value;
+        }
 
         /// <inheritdoc />
         [DataMember]
         public byte[] DataBytes { get; set; } = Array.Empty<byte>();
 
         /// <inheritdoc />
-        public Stream DataStream
-        {
-            get
-            {
-                return new MemoryStream(DataBytes, false);
-            }
-        }
+        public Stream DataStream => new MemoryStream(DataBytes, false);
 
         /// <inheritdoc />
         [DataMember]
@@ -44,7 +43,5 @@ namespace Ipfs.Http
                 size = value;
             }
         }
-
     }
-
 }

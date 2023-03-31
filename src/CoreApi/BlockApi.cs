@@ -46,7 +46,7 @@ namespace Ipfs.Http
             }
             var json = await ipfs.UploadAsync("block/put", cancel, data, options.ToArray());
             var info = JObject.Parse(json);
-            Cid cid = (string?)info["Key"];
+            Cid cid = (string)info["Key"]!;
 
             if (pin)
             {
@@ -75,7 +75,7 @@ namespace Ipfs.Http
             }
             var json = await ipfs.UploadAsync("block/put", cancel, data, name: null, options.ToArray());
             var info = JObject.Parse(json);
-            Cid cid = (string?)info["Key"];
+            Cid cid = (string)info["Key"]!;
 
             if (pin)
             {
@@ -92,7 +92,7 @@ namespace Ipfs.Http
             return new Block
             {
                 Size = (long?)info["Size"] ?? 0,
-                Id = (string?)info["Key"]
+                Id = (string)info["Key"]!
             };
         }
 
@@ -105,7 +105,7 @@ namespace Ipfs.Http
             var error = (string?)result["Error"];
             if (error is not null)
                 throw new HttpRequestException(error);
-            return (Cid)(string?)result["Hash"];
+            return (Cid)(string)result["Hash"]!;
         }
     }
 }

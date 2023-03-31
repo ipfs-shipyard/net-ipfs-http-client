@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 
@@ -8,20 +9,21 @@ namespace Ipfs.Http
     [DataContract]
     public class FileSystemNode : IFileSystemNode
     {
-        IpfsClient? ipfsClient;
-        IEnumerable<IFileSystemLink>? links;
-        long? size;
-        bool? isDirectory;
+        private IpfsClient? ipfsClient;
+        private IEnumerable<IFileSystemLink>? links;
+        private long? size;
+        private bool? isDirectory;
+        private Cid? id;
 
         /// <inheritdoc />
-        public byte[]? DataBytes
+        public byte[] DataBytes
         {
             get
             {
                 using (var stream = DataStream)
                 {
                     if (stream is null)
-                        return null;
+                        return Array.Empty<byte>();
 
                     using (var data = new MemoryStream())
                     {
@@ -33,17 +35,15 @@ namespace Ipfs.Http
         }
 
         /// <inheritdoc />
-        public Stream? DataStream
-        {
-            get
-            {
-                return IpfsClient?.FileSystem.ReadFileAsync(Id).Result;
-            }
-        }
+        public Stream DataStream => IpfsClient.FileSystem.ReadFileAsync(Id).GetAwaiter().GetResult();
 
         /// <inheritdoc />
         [DataMember]
-        public Cid? Id { get; set; }
+        public Cid Id
+        {
+            get => id ?? throw new InvalidDataException("Field mus be initialized");
+            set => id = value;
+        }
 
         /// <inheritdoc />
         [DataMember]
@@ -111,7 +111,7 @@ namespace Ipfs.Http
         /// <inheritdoc />
         public IFileSystemLink ToLink(string name = "")
         {
-            var link = new FileSystemLink
+            var link = new FileSystemLink(Id)
             {
                 Name = string.IsNullOrWhiteSpace(name) ? Name : name,
                 Id = Id,
@@ -134,10 +134,7 @@ namespace Ipfs.Http
                 {
                     lock (this)
                     {
-                        if (ipfsClient is null)
-                        {
-                            ipfsClient = new IpfsClient();
-                        }
+                        ipfsClient ??= new IpfsClient();
                     }
                 }
                 return ipfsClient;
@@ -155,6 +152,5 @@ namespace Ipfs.Http
             this.Links = node.Links;
             this.Size = node.Size;
         }
-
     }
 }

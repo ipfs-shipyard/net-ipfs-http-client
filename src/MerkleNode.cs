@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Org.BouncyCastle.Bcpg.OpenPgp;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
@@ -62,7 +63,7 @@ namespace Ipfs.Http
         public MerkleNode(IMerkleLink link)
         {
             Id = link.Id;
-            Name = link.Name;
+            Name = link.Name ?? string.Empty;
             blockSize = link.Size;
             hasBlockStats = true;
         }
@@ -131,11 +132,7 @@ namespace Ipfs.Http
         {
             get
             {
-                if (links is null)
-                {
-                    links = IpfsClient.Object.LinksAsync(Id).Result;
-                }
-
+                links ??= IpfsClient.Object.LinksAsync(Id).GetAwaiter().GetResult();
                 return links;
             }
         }

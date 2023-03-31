@@ -206,21 +206,21 @@ namespace Ipfs.Http
         }
 
         /// <summary>
-        ///   Get the IPFS API.
+        ///   Get the IPFS API singleton.
         /// </summary>
         /// <returns>
         ///   A <see cref="HttpClient"/>.
         /// </returns>
         /// <remarks>
-        ///   Only one client is needed.  Its thread safe.
+        ///   Only one client is needed.  It is thread safe.
         /// </remarks>
         HttpClient Api()
         {
-            if (api == null)
+            if (api is null)
             {
                 lock (safe)
                 {
-                    if (api == null)
+                    if (api is null)
                     {
                         if (HttpMessageHandler is HttpClientHandler handler && handler.SupportsAutomaticDecompression)
                         {

@@ -29,7 +29,7 @@ namespace Ipfs.Http
         {
             var o = JObject.Parse(json);
 
-            this.Sender = (string?)o["from"];
+            this.Sender = (string)o["from"]!;
             this.SequenceNumber = Multibase.Decode((string?)o["seqno"], out MultibaseEncoding _);
             this.DataBytes = Multibase.Decode((string?)o["data"], out MultibaseEncoding _);
 

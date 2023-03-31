@@ -27,7 +27,7 @@ namespace Ipfs.Http
         {
             var json = await ipfs.DoCommandAsync("object/new", cancel, template);
             var hash = (string?)(JObject.Parse(json)["Hash"]);
-            return await GetAsync(hash);
+            return await GetAsync(hash!);
         }
 
         public async Task<DagNode> GetAsync(Cid id, CancellationToken cancel = default)
@@ -70,7 +70,7 @@ namespace Ipfs.Http
             var links = ((JArray?)result["Links"])
                 .Select(link => new DagLink(
                     (string?)link["Name"],
-                    (string?)link["Hash"],
+                    (string)link["Hash"]!,
                     (long?)link["Size"] ?? 0));
             return new DagNode(data, links);
         }

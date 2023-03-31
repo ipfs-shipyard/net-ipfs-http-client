@@ -1,25 +1,31 @@
-﻿using Ipfs.CoreApi;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Ipfs.CoreApi;
+using Newtonsoft.Json.Linq;
 
 namespace Ipfs.Http
 {
-    class KeyApi : IKeyApi
+    internal class KeyApi : IKeyApi
     {
         /// <summary>
         ///   Information about a local key.
         /// </summary>
-        public class KeyInfo : IKey
+        public sealed class KeyInfo : IKey
         {
-            /// <inheritdoc />
-            public MultiHash? Id { get; set; }
+            public KeyInfo(MultiHash id, string name)
+            {
+                Id = id;
+                Name = name;
+            }
 
             /// <inheritdoc />
-            public string? Name { get; set; }
+            public MultiHash Id { get; }
+
+            /// <inheritdoc />
+            public string Name { get; }
 
             /// <inheritdoc />
             public override string ToString()
@@ -48,11 +54,7 @@ namespace Ipfs.Http
             var json = await ipfs.DoCommandAsync("key/list", cancel, null, "l=true");
             var keys = (JArray?)(JObject.Parse(json)["Keys"]);
             return keys
-                .Select(k => new KeyInfo
-                {
-                    Id = (string?)k["Id"],
-                    Name = (string?)k["Name"]
-                });
+                .Select(k => new KeyInfo((string)k["Id"]!, (string)k["Name"]!));
         }
 
         public async Task<IKey?> RemoveAsync(string name, CancellationToken cancel = default)
@@ -61,11 +63,7 @@ namespace Ipfs.Http
             var keys = JObject.Parse(json)["Keys"] as JArray;
 
             return keys?
-                .Select(k => new KeyInfo
-                {
-                    Id = (string?)k["Id"],
-                    Name = (string?)k["Name"]
-                })
+                .Select(k => new KeyInfo((string)k["Id"]!, (string)k["Name"]!))
                 .First();
         }
 
@@ -73,11 +71,7 @@ namespace Ipfs.Http
         {
             var json = await ipfs.DoCommandAsync("key/rename", cancel, oldName, $"arg={newName}");
             var key = JObject.Parse(json);
-            return new KeyInfo
-            {
-                Id = (string?)key["Id"],
-                Name = (string?)key["Now"]
-            };
+            return new KeyInfo((string)key["Id"]!, (string)key["Now"]!);
         }
 
         public Task<string> ExportAsync(string name, char[] password, CancellationToken cancel = default)

@@ -1,5 +1,4 @@
-﻿using Ipfs.Http;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;
 using System.Linq;
@@ -11,9 +10,9 @@ namespace Ipfs.Http
     [TestClass]
     public class BlockApiTest
     {
-        private IpfsClient ipfs = TestFixture.Ipfs;
-        private string id = "QmPv52ekjS75L4JmHpXVeuJ5uX2ecSfSZo88NSyxwA3rAQ";
-        private byte[] blob = Encoding.UTF8.GetBytes("blorb");
+        private readonly IpfsClient ipfs = TestFixture.Ipfs;
+        private const string id = "QmPv52ekjS75L4JmHpXVeuJ5uX2ecSfSZo88NSyxwA3rAQ";
+        private readonly byte[] blob = Encoding.UTF8.GetBytes("blorb");
 
         [TestMethod]
         public void Put_Bytes()
@@ -135,7 +134,8 @@ namespace Ipfs.Http
         {
             var _ = ipfs.Block.PutAsync(blob).Result;
             var cid = await ipfs.Block.RemoveAsync(id);
-            Assert.AreEqual(id, (string)cid);
+            Assert.IsNotNull(cid);
+            Assert.AreEqual(id, (string)cid!);
         }
 
         [TestMethod]
@@ -148,7 +148,7 @@ namespace Ipfs.Http
         public async Task Remove_Unknown_OK()
         {
             var cid = await ipfs.Block.RemoveAsync("QmPv52ekjS75L4JmHpXVeuJ5uX2ecSfSZo88NSyxwA3rFF", true);
+            Assert.IsNull(cid);
         }
-
     }
 }

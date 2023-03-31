@@ -34,7 +34,7 @@ namespace Ipfs.Http
                 DupBlksReceived = (ulong?)stat["DupBlksReceived"] ?? 0,
                 DupDataReceived = (ulong?)stat["DupDataReceived"] ?? 0,
                 ProvideBufLen = (int?)stat["ProvideBufLen"] ?? 0,
-                Peers = ((JArray?)stat["Peers"]).Select(s => new MultiHash((string?)s)),
+                Peers = ((JArray?)stat["Peers"]).Select(s => new MultiHash((string)s!)).ToList(),
                 Wantlist = ((JArray?)stat["Wantlist"]).Select(o => Cid.Decode(o["/"]?.ToString() ?? string.Empty))
             };
         }

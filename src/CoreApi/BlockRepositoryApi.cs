@@ -29,11 +29,11 @@ namespace Ipfs.Http
             await ipfs.DoCommandAsync("repo/verify", cancel);
         }
 
-        public async Task<string?> VersionAsync(CancellationToken cancel = default)
+        public async Task<string> VersionAsync(CancellationToken cancel = default)
         {
             var json = await ipfs.DoCommandAsync("repo/version", cancel);
             var info = JObject.Parse(json);
-            return (string?)info["Version"];
+            return (string)info["Version"]!;
         }
     }
 }

@@ -21,7 +21,7 @@ namespace Ipfs.Http
             var opts = "recursive=" + recursive.ToString().ToLowerInvariant();
             var json = await ipfs.DoCommandAsync("pin/add", cancel, path, opts);
             return ((JArray?)JObject.Parse(json)["Pins"])
-                .Select(p => (Cid)(string?)p);
+                .Select(p => (Cid)(string)p!);
         }
 
         public async Task<IEnumerable<Cid>> ListAsync(CancellationToken cancel = default)
@@ -43,7 +43,7 @@ namespace Ipfs.Http
             var opts = "recursive=" + recursive.ToString().ToLowerInvariant();
             var json = await ipfs.DoCommandAsync("pin/rm", cancel, id, opts);
             return ((JArray?)JObject.Parse(json)["Pins"])
-                .Select(p => (Cid)(string?)p);
+                .Select(p => (Cid)(string)p!);
         }
     }
 }
