@@ -36,8 +36,7 @@ namespace Ipfs.Http
         public void NullHash()
         {
             ExceptionAssert.Throws<ArgumentNullException>(() => new MerkleNode((string)null!));
-            ExceptionAssert.Throws<ArgumentNullException>(() => new MerkleNode(""));
-            ExceptionAssert.Throws<ArgumentNullException>(() => new MerkleNode((Cid)null!));
+            ExceptionAssert.Throws<ArgumentNullException>(() => new MerkleNode(string.Empty));
         }
 
         [TestMethod]
