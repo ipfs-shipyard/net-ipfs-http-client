@@ -73,6 +73,7 @@ namespace Ipfs.Http
             Dag = new DagApi(this);
             Object = new ObjectApi(this);
             FileSystem = new FileSystemApi(this);
+            Mfs = new MfsApi(this);
             PubSub = new PubSubApi(this);
             Key = new KeyApi(this);
             Generic = this;
@@ -161,6 +162,9 @@ namespace Ipfs.Http
 
         /// <inheritdoc />
         public IFileSystemApi FileSystem { get; private set; }
+
+        /// <inheritdoc />
+        public IMfsApi Mfs { get; private set; }
 
         /// <inheritdoc />
         public IPubSubApi PubSub { get; private set; }
