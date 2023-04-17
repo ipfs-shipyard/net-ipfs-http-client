@@ -15,7 +15,8 @@ namespace Ipfs.Http
         [DataMember]
         public Cid Id
         {
-            get => id ?? throw new InvalidDataException("Value mus be initialized");
+            get => id ?? throw new InvalidDataException("Value must be initialized");
+
             set => id = value;
         }
 
