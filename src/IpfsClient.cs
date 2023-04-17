@@ -26,10 +26,10 @@ namespace Ipfs.Http
     /// </remarks>
     public partial class IpfsClient : ICoreApi
     {
-        const string unknownFilename = "unknown";
+        private const string unknownFilename = "unknown";
 
-        static readonly object safe = new object();
-        static HttpClient? api = null;
+        private static readonly object safe = new object();
+        private static HttpClient? api;
 
         /// <summary>
         ///   The default URL to the IPFS HTTP API server.
@@ -42,7 +42,7 @@ namespace Ipfs.Http
         /// </remarks>
         public static Uri DefaultApiUri = new Uri(
             Environment.GetEnvironmentVariable("IpfsHttpApi")
-            ?? "http://localhost:5001");
+            ?? "http://localhost:1206");
 
         /// <summary>
         ///   Creates a new instance of the <see cref="IpfsClient"/> class and sets the
@@ -493,6 +493,7 @@ namespace Ipfs.Http
                 return json;
             }
         }
+
         /// <summary>
         ///   Perform an <see href="https://ipfs.io/docs/api/">IPFS API command</see> that
         ///   requires uploading of a "file".

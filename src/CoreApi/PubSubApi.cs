@@ -114,7 +114,5 @@ namespace Ipfs.Http
                 sr.Dispose();
             }
         }
-
     }
-
 }

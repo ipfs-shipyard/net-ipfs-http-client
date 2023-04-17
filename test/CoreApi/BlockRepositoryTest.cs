@@ -21,6 +21,5 @@ namespace Ipfs.Http
             var version = await ipfs.BlockRepository.VersionAsync();
             Assert.IsFalse(string.IsNullOrWhiteSpace(version));
         }
-
     }
 }
