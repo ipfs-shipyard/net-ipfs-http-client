@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Runtime.Serialization;
 
 namespace Ipfs.Http
@@ -7,24 +8,24 @@ namespace Ipfs.Http
     [DataContract]
     public class Block : IDataBlock
     {
-        long? size;
+        private long? size;
+        private Cid? id;
 
         /// <inheritdoc />
         [DataMember]
-        public Cid Id { get; set; }
-
-        /// <inheritdoc />
-        [DataMember]
-        public byte[] DataBytes { get; set; }
-
-        /// <inheritdoc />
-        public Stream DataStream
+        public Cid Id
         {
-            get
-            {
-                return new MemoryStream(DataBytes, false);
-            }
+            get => id ?? throw new InvalidDataException("Value must be initialized");
+
+            set => id = value;
         }
+
+        /// <inheritdoc />
+        [DataMember]
+        public byte[] DataBytes { get; set; } = Array.Empty<byte>();
+
+        /// <inheritdoc />
+        public Stream DataStream => new MemoryStream(DataBytes, false);
 
         /// <inheritdoc />
         [DataMember]
@@ -43,7 +44,5 @@ namespace Ipfs.Http
                 size = value;
             }
         }
-
     }
-
 }

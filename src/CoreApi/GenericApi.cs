@@ -14,13 +14,13 @@ namespace Ipfs.Http
         private const double TicksPerNanosecond = (double)TimeSpan.TicksPerMillisecond * 0.000001;
 
         /// <inheritdoc />
-        public Task<Peer> IdAsync(MultiHash peer = null, CancellationToken cancel = default(CancellationToken))
+        public Task<Peer> IdAsync(MultiHash? peer = null, CancellationToken cancel = default)
         {
             return DoCommandAsync<Peer>("id", cancel, peer?.ToString());
         }
 
         /// <inheritdoc />
-        public async Task<IEnumerable<PingResult>> PingAsync(MultiHash peer, int count = 10, CancellationToken cancel = default(CancellationToken))
+        public async Task<IEnumerable<PingResult>> PingAsync(MultiHash peer, int count = 10, CancellationToken cancel = default)
         {
             var stream = await PostDownloadAsync("ping", cancel,
                 peer.ToString(),
@@ -29,7 +29,7 @@ namespace Ipfs.Http
         }
 
         /// <inheritdoc />
-        public async Task<IEnumerable<PingResult>> PingAsync(MultiAddress address, int count = 10, CancellationToken cancel = default(CancellationToken))
+        public async Task<IEnumerable<PingResult>> PingAsync(MultiAddress address, int count = 10, CancellationToken cancel = default)
         {
             var stream = await PostDownloadAsync("ping", cancel,
                 address.ToString(),
@@ -48,35 +48,34 @@ namespace Ipfs.Http
                     var r = JObject.Parse(json);
                     yield return new PingResult
                     {
-                        Success = (bool)r["Success"],
-                        Text = (string)r["Text"],
-                        Time = TimeSpan.FromTicks((long)((long)r["Time"] * TicksPerNanosecond))
+                        Success = (bool?)r["Success"] ?? false,
+                        Text = (string?)r["Text"],
+                        Time = TimeSpan.FromTicks((long)(((long?)r["Time"] ?? 0) * TicksPerNanosecond))
                     };
                 }
             }
         }
 
         /// <inheritdoc />
-        public async Task<string> ResolveAsync(string name, bool recursive = true, CancellationToken cancel = default(CancellationToken))
+        public async Task<string> ResolveAsync(string name, bool recursive = true, CancellationToken cancel = default)
         {
             var json = await DoCommandAsync("resolve", cancel,
                 name,
                 $"recursive={recursive.ToString().ToLowerInvariant()}");
-            var path = (string)(JObject.Parse(json)["Path"]);
-            return path;
+            var path = (string?)(JObject.Parse(json)["Path"]);
+            return path ?? string.Empty;
         }
 
         /// <inheritdoc />
         public async Task ShutdownAsync()
         {
-            await DoCommandAsync("shutdown", default(CancellationToken));
+            await DoCommandAsync("shutdown", default);
         }
 
         /// <inheritdoc />
-        public Task<Dictionary<string, string>> VersionAsync(CancellationToken cancel = default(CancellationToken))
+        public Task<Dictionary<string, string>> VersionAsync(CancellationToken cancel = default)
         {
             return DoCommandAsync<Dictionary<string, string>>("version", cancel);
         }
-
     }
 }

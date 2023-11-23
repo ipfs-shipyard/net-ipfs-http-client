@@ -16,7 +16,7 @@ namespace Ipfs.Http
         {
             IpfsClient ipfs = TestFixture.Ipfs;
             var config = ipfs.Config.GetAsync().Result;
-            StringAssert.StartsWith(config["Addresses"]["API"].Value<string>(), apiAddress);
+            StringAssert.StartsWith(config["Addresses"]!["API"]!.Value<string>(), apiAddress);
         }
 
         [TestMethod]
@@ -32,8 +32,8 @@ namespace Ipfs.Http
         {
             IpfsClient ipfs = TestFixture.Ipfs;
             var addresses = ipfs.Config.GetAsync("Addresses").Result;
-            StringAssert.StartsWith(addresses["API"].Value<string>(), apiAddress);
-            StringAssert.StartsWith(addresses["Gateway"].Value<string>(), gatewayAddress);
+            StringAssert.StartsWith(addresses["API"]!.Value<string>(), apiAddress);
+            StringAssert.StartsWith(addresses["Gateway"]!.Value<string>(), gatewayAddress);
         }
 
         [TestMethod]

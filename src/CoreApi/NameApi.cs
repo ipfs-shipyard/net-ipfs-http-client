@@ -8,14 +8,14 @@ namespace Ipfs.Http
 {
     class NameApi : INameApi
     {
-        private IpfsClient ipfs;
+        private readonly IpfsClient ipfs;
 
         internal NameApi(IpfsClient ipfs)
         {
             this.ipfs = ipfs;
         }
 
-        public async Task<NamedContent> PublishAsync(string path, bool resolve = true, string key = "self", TimeSpan? lifetime = null, CancellationToken cancel = default(CancellationToken))
+        public async Task<NamedContent> PublishAsync(string path, bool resolve = true, string key = "self", TimeSpan? lifetime = null, CancellationToken cancel = default)
         {
             var json = await ipfs.DoCommandAsync("name/publish", cancel,
                 path,
@@ -26,12 +26,12 @@ namespace Ipfs.Http
             var info = JObject.Parse(json);
             return new NamedContent
             {
-                NamePath = (string)info["Name"],
-                ContentPath = (string)info["Value"]
+                NamePath = (string?)info["Name"],
+                ContentPath = (string?)info["Value"]
             };
         }
 
-        public Task<NamedContent> PublishAsync(Cid id, string key = "self", TimeSpan? lifetime = null, CancellationToken cancel = default(CancellationToken))
+        public Task<NamedContent> PublishAsync(Cid id, string key = "self", TimeSpan? lifetime = null, CancellationToken cancel = default)
         {
             return PublishAsync("/ipfs/" + id.Encode(), false, key, lifetime, cancel);
         }
@@ -42,8 +42,8 @@ namespace Ipfs.Http
                 name,
                 $"recursive={recursive.ToString().ToLowerInvariant()}",
                 $"nocache={nocache.ToString().ToLowerInvariant()}");
-            var path = (string)(JObject.Parse(json)["Path"]);
-            return path;
+            var path = (string?)(JObject.Parse(json)["Path"]);
+            return path ?? string.Empty;
         }
     }
 }

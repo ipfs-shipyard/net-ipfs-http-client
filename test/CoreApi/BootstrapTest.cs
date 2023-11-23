@@ -7,8 +7,8 @@ namespace Ipfs.Http
     [TestClass]
     public class BootstapApiTest
     {
-        IpfsClient ipfs = TestFixture.Ipfs;
-        MultiAddress somewhere = "/ip4/127.0.0.1/tcp/4009/ipfs/QmPv52ekjS75L4JmHpXVeuJ5uX2ecSfSZo88NSyxwA3rAQ";
+        private readonly IpfsClient ipfs = TestFixture.Ipfs;
+        private readonly MultiAddress somewhere = "/ip4/127.0.0.1/tcp/4009/ipfs/QmPv52ekjS75L4JmHpXVeuJ5uX2ecSfSZo88NSyxwA3rAQ";
 
         [TestMethod]
         public async Task Add_Remove()

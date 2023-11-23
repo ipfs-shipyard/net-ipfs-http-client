@@ -18,7 +18,8 @@ namespace Ipfs.Http
             var b = await ipfs.FileSystem.ListFileAsync(a.Id);
             var json = JsonConvert.SerializeObject(b);
             var c = JsonConvert.DeserializeObject<FileSystemNode>(json);
-            Assert.AreEqual(b.Id, c.Id);
+            Assert.IsNotNull(c);
+            Assert.AreEqual(b.Id, c!.Id);
             Assert.AreEqual(b.IsDirectory, c.IsDirectory);
             Assert.AreEqual(b.Size, c.Size);
             CollectionAssert.AreEqual(b.Links.ToArray(), c.Links.ToArray());

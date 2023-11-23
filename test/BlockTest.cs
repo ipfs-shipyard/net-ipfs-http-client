@@ -30,6 +30,5 @@ namespace Ipfs.Http
             Assert.AreEqual(3, stream.ReadByte());
             Assert.AreEqual(-1, stream.ReadByte(), "at eof");
         }
-
     }
 }

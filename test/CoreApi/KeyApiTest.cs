@@ -61,7 +61,7 @@ namespace Ipfs.Http
 
             var removed = await ipfs.Key.RemoveAsync(name);
             Assert.IsNotNull(removed);
-            Assert.AreEqual(key.Name, removed.Name);
+            Assert.AreEqual(key.Name, removed!.Name);
             Assert.AreEqual(key.Id, removed.Id);
 
             keys = await ipfs.Key.ListAsync();
