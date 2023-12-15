@@ -37,46 +37,70 @@ namespace Ipfs.Http
 
         public async Task<IKey> CreateAsync(string name, string keyType, int size, CancellationToken cancel = default(CancellationToken))
         {
-            return await ipfs.DoCommandAsync<KeyInfo>("key/gen", cancel,
-                name,
-                $"type={keyType}",
-                $"size={size}");
+            var json = await ipfs.DoCommandAsync("key/gen", cancel, name, $"type={keyType}", $"size={size}", "ipns-base=base32");
+            var jobject = JObject.Parse(json);
+
+            string id = (string)jobject["Id"];
+            string apiName = (string)jobject["Name"];
+
+            return new KeyInfo
+            {
+                Id = Cid.Decode(id).Hash,
+                Name = apiName
+            };
         }
 
         public async Task<IEnumerable<IKey>> ListAsync(CancellationToken cancel = default(CancellationToken))
         {
-            var json = await ipfs.DoCommandAsync("key/list", cancel, null, "l=true");
+            var json = await ipfs.DoCommandAsync("key/list", cancel, null, "l=true", "ipns-base=base32");
             var keys = (JArray)(JObject.Parse(json)["Keys"]);
+
             return keys
-                .Select(k => new KeyInfo
+                .Select(k =>
                 {
-                    Id = (string)k["Id"],
-                    Name = (string)k["Name"]
+                    string id = (string)k["Id"];
+                    string name = (string)k["Name"];
+
+                    return new KeyInfo
+                    {
+                        Id = Cid.Decode(id).Hash,
+                        Name = name
+                    };
                 });
         }
 
         public async Task<IKey> RemoveAsync(string name, CancellationToken cancel = default(CancellationToken))
         {
-            var json = await ipfs.DoCommandAsync("key/rm", cancel, name);
+            var json = await ipfs.DoCommandAsync("key/rm", cancel, name, "ipns-base=base32");
             var keys = JObject.Parse(json)["Keys"] as JArray;
 
             return keys?
-                .Select(k => new KeyInfo
-                {
-                    Id = (string)k["Id"],
-                    Name = (string)k["Name"]
-                })
+                    .Select(k =>
+                    {
+                        string id = (string)k["Id"];
+                        string keyName = (string)k["Name"];
+
+                        return new KeyInfo
+                        {
+                            Id = Cid.Decode(id).Hash,
+                            Name = keyName
+                        };
+                    })
                 .First();
         }
 
         public async Task<IKey> RenameAsync(string oldName, string newName, CancellationToken cancel = default(CancellationToken))
         {
-            var json = await ipfs.DoCommandAsync("key/rename", cancel, oldName, $"arg={newName}");
-            var key = JObject.Parse(json);
+            var json = await ipfs.DoCommandAsync("key/rename", cancel, oldName, $"arg={newName}", "ipns-base=base32");
+            var jobject = JObject.Parse(json);
+
+            string id = (string)jobject["Id"];
+            string currentName = (string)jobject["Now"];
+
             return new KeyInfo
             {
-                Id = (string)key["Id"],
-                Name = (string)key["Now"]
+                Id = Cid.Decode(id).Hash,
+                Name = currentName
             };
         }
 

@@ -19,6 +19,7 @@ namespace Ipfs.Http
         public async Task Self_Key_Exists()
         {
             IpfsClient ipfs = TestFixture.Ipfs;
+
             var keys = await ipfs.Key.ListAsync();
             var self = keys.Single(k => k.Name == "self");
             var me = await ipfs.IdAsync();
@@ -31,7 +32,7 @@ namespace Ipfs.Http
         {
             var name = "net-api-test-create";
             IpfsClient ipfs = TestFixture.Ipfs;
-            var key = await ipfs.Key.CreateAsync(name, "rsa", 1024);
+            var key = await ipfs.Key.CreateAsync(name, "rsa", 2048);
             try
             {
                 Assert.IsNotNull(key);
@@ -54,7 +55,7 @@ namespace Ipfs.Http
         {
             var name = "net-api-test-remove";
             IpfsClient ipfs = TestFixture.Ipfs;
-            var key = await ipfs.Key.CreateAsync(name, "rsa", 1024);
+            var key = await ipfs.Key.CreateAsync(name, "rsa", 2048);
             var keys = await ipfs.Key.ListAsync();
             var clone = keys.Single(k => k.Name == name);
             Assert.IsNotNull(clone);
@@ -74,7 +75,7 @@ namespace Ipfs.Http
             var oname = "net-api-test-rename1";
             var rname = "net-api-test-rename2";
             IpfsClient ipfs = TestFixture.Ipfs;
-            var okey = await ipfs.Key.CreateAsync(oname, "rsa", 1024);
+            var okey = await ipfs.Key.CreateAsync(oname, "rsa", 2048);
             try
             {
                 Assert.AreEqual(oname, okey.Name);
@@ -93,14 +94,20 @@ namespace Ipfs.Http
                 {
                     await ipfs.Key.RemoveAsync(oname);
                 }
-                catch (Exception) { }
+                catch (Exception)
+                {
+                    // ignored
+                }
+
                 try
                 {
                     await ipfs.Key.RemoveAsync(rname);
                 }
-                catch (Exception) { }
+                catch (Exception)
+                {
+                    // ignored
+                }
             }
         }
-
     }
 }
