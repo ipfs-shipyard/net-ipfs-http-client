@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -24,18 +25,19 @@ namespace Ipfs.Http
         }
 
         [TestMethod]
-        [Ignore("takes forever")]
         public async Task Publish()
         {
             var ipfs = TestFixture.Ipfs;
             var cs = new CancellationTokenSource(TimeSpan.FromMinutes(5));
             var content = await ipfs.FileSystem.AddTextAsync("hello world");
-            var key = await ipfs.Key.CreateAsync("name-publish-test", "rsa", 1024);
+            var key = await ipfs.Key.CreateAsync("name-publish-test", "rsa", 2048);
+
             try
             {
                 var result = await ipfs.Name.PublishAsync(content.Id, key.Name, cancel: cs.Token);
                 Assert.IsNotNull(result);
-                StringAssert.EndsWith(result.NamePath, key.Id.ToString());
+
+                StringAssert.EndsWith(result.NamePath, key.Id);
                 StringAssert.EndsWith(result.ContentPath, content.Id.Encode());
             }
             finally

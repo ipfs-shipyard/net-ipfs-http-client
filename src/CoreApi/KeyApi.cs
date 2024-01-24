@@ -16,7 +16,7 @@ namespace Ipfs.Http
         public class KeyInfo : IKey
         {
             /// <inheritdoc />
-            public MultiHash Id { get; set; }
+            public Cid Id { get; set; }
 
             /// <inheritdoc />
             public string Name { get; set; }
@@ -37,7 +37,7 @@ namespace Ipfs.Http
 
         public async Task<IKey> CreateAsync(string name, string keyType, int size, CancellationToken cancel = default(CancellationToken))
         {
-            var json = await ipfs.DoCommandAsync("key/gen", cancel, name, $"type={keyType}", $"size={size}", "ipns-base=base32");
+            var json = await ipfs.DoCommandAsync("key/gen", cancel, name, $"type={keyType}", $"size={size}", "ipns-base=base36");
             var jobject = JObject.Parse(json);
 
             string id = (string)jobject["Id"];
@@ -45,14 +45,14 @@ namespace Ipfs.Http
 
             return new KeyInfo
             {
-                Id = Cid.Decode(id).Hash,
+                Id = id,
                 Name = apiName
             };
         }
 
         public async Task<IEnumerable<IKey>> ListAsync(CancellationToken cancel = default(CancellationToken))
         {
-            var json = await ipfs.DoCommandAsync("key/list", cancel, null, "l=true", "ipns-base=base32");
+            var json = await ipfs.DoCommandAsync("key/list", cancel, null, "l=true", "ipns-base=base36");
             var keys = (JArray)(JObject.Parse(json)["Keys"]);
 
             return keys
@@ -63,7 +63,7 @@ namespace Ipfs.Http
 
                     return new KeyInfo
                     {
-                        Id = Cid.Decode(id).Hash,
+                        Id = id,
                         Name = name
                     };
                 });
@@ -71,7 +71,7 @@ namespace Ipfs.Http
 
         public async Task<IKey> RemoveAsync(string name, CancellationToken cancel = default(CancellationToken))
         {
-            var json = await ipfs.DoCommandAsync("key/rm", cancel, name, "ipns-base=base32");
+            var json = await ipfs.DoCommandAsync("key/rm", cancel, name, "ipns-base=base36");
             var keys = JObject.Parse(json)["Keys"] as JArray;
 
             return keys?
@@ -82,7 +82,7 @@ namespace Ipfs.Http
 
                         return new KeyInfo
                         {
-                            Id = Cid.Decode(id).Hash,
+                            Id = id,
                             Name = keyName
                         };
                     })
@@ -91,7 +91,7 @@ namespace Ipfs.Http
 
         public async Task<IKey> RenameAsync(string oldName, string newName, CancellationToken cancel = default(CancellationToken))
         {
-            var json = await ipfs.DoCommandAsync("key/rename", cancel, oldName, $"arg={newName}", "ipns-base=base32");
+            var json = await ipfs.DoCommandAsync("key/rename", cancel, oldName, $"arg={newName}", "ipns-base=base36");
             var jobject = JObject.Parse(json);
 
             string id = (string)jobject["Id"];
@@ -99,7 +99,7 @@ namespace Ipfs.Http
 
             return new KeyInfo
             {
-                Id = Cid.Decode(id).Hash,
+                Id = id,
                 Name = currentName
             };
         }
