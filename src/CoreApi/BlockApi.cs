@@ -23,7 +23,8 @@ namespace Ipfs.Http
             return new Block
             {
                 DataBytes = data,
-                Id = id
+                Id = id,
+                Size = data.Length,
             };
         }
 
