@@ -11,6 +11,7 @@
     <!-- https://semver.org/spec/v2.0.0.html -->
     <Version>0.2.0</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
+    <LangVersion>12.0</LangVersion>
 
     <!-- Nuget specs -->
     <PackageId>IpfsShipyard.Ipfs.Http.Client</PackageId>
