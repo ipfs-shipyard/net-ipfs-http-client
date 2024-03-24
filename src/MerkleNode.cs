@@ -144,25 +144,6 @@ namespace Ipfs.Http
         }
 
         /// <inheritdoc />
-        [DataMember]
-        public byte[] DataBytes
-        {
-            get
-            {
-                return IpfsClient.Block.GetAsync(Id).Result.DataBytes;
-            }
-        }
-
-        /// <inheritdoc />
-        public Stream DataStream
-        {
-            get
-            {
-                return IpfsClient.Block.GetAsync(Id).Result.DataStream;
-            }
-        }
-
-        /// <inheritdoc />
         public IMerkleLink ToLink(string name = null)
         {
             return new DagLink(name ?? Name, Id, BlockSize);

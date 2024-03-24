@@ -22,7 +22,7 @@ namespace Ipfs.Http
             this.emptyFolder = new Lazy<DagNode>(() => ipfs.Object.NewDirectoryAsync().Result);
         }
 
-        public async Task<IFileSystemNode> AddFileAsync(string path, AddFileOptions options = null, CancellationToken cancel = default(CancellationToken))
+        public async Task<IFileSystemNode> AddFileAsync(string path, AddFileOptions options = null, CancellationToken cancel = default)
         {
             using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
@@ -31,15 +31,16 @@ namespace Ipfs.Http
             }
         }
 
-        public Task<IFileSystemNode> AddTextAsync(string text, AddFileOptions options = null, CancellationToken cancel = default(CancellationToken))
+        public Task<IFileSystemNode> AddTextAsync(string text, AddFileOptions options = null, CancellationToken cancel = default)
         {
             return AddAsync(new MemoryStream(Encoding.UTF8.GetBytes(text), false), "", options, cancel);
         }
 
-        public async Task<IFileSystemNode> AddAsync(Stream stream, string name = "", AddFileOptions options = null, CancellationToken cancel = default(CancellationToken))
+        public async Task<IFileSystemNode> AddAsync(Stream stream, string name = "", AddFileOptions options = null, CancellationToken cancel = default)
         {
             if (options == null)
                 options = new AddFileOptions();
+
             var opts = new List<string>();
             if (!options.Pin)
                 opts.Add("pin=false");
@@ -59,6 +60,7 @@ namespace Ipfs.Http
                 opts.Add($"cid-base=${options.Encoding}");
             if (!string.IsNullOrWhiteSpace(options.ProtectionKey))
                 opts.Add($"protect={options.ProtectionKey}");
+
             opts.Add($"chunker=size-{options.ChunkSize}");
 
             var response = await ipfs.Upload2Async("add", cancel, stream, name, opts.ToArray());
@@ -92,7 +94,6 @@ namespace Ipfs.Http
                             Size = long.Parse((string)r["Size"]),
                             IsDirectory = false,
                             Name = name,
-                            IpfsClient = ipfs
                         };
                     }
                 }
@@ -102,7 +103,7 @@ namespace Ipfs.Http
             return fsn;
         }
 
-        public async Task<IFileSystemNode> AddDirectoryAsync(string path, bool recursive = true, AddFileOptions options = null, CancellationToken cancel = default(CancellationToken))
+        public async Task<IFileSystemNode> AddDirectoryAsync(string path, bool recursive = true, AddFileOptions options = null, CancellationToken cancel = default)
         {
             if (options == null)
                 options = new AddFileOptions();
@@ -145,7 +146,6 @@ namespace Ipfs.Http
                 Links = links,
                 IsDirectory = true,
                 Size = directory.Size,
-                IpfsClient = ipfs
             };
 
         }
@@ -163,7 +163,7 @@ namespace Ipfs.Http
         /// <returns>
         ///   The contents of the <paramref name="path"/> as a <see cref="string"/>.
         /// </returns>
-        public async Task<String> ReadAllTextAsync(string path, CancellationToken cancel = default(CancellationToken))
+        public async Task<String> ReadAllTextAsync(string path, CancellationToken cancel = default)
         {
             using (var data = await ReadFileAsync(path, cancel))
             using (var text = new StreamReader(data))
@@ -186,12 +186,12 @@ namespace Ipfs.Http
         /// <returns>
         ///   A <see cref="Stream"/> to the file contents.
         /// </returns>
-        public Task<Stream> ReadFileAsync(string path, CancellationToken cancel = default(CancellationToken))
+        public Task<Stream> ReadFileAsync(string path, CancellationToken cancel = default)
         {
             return ipfs.PostDownloadAsync("cat", cancel, path);
         }
 
-        public Task<Stream> ReadFileAsync(string path, long offset, long length = 0, CancellationToken cancel = default(CancellationToken))
+        public Task<Stream> ReadFileAsync(string path, long offset, long length = 0, CancellationToken cancel = default)
         {
             // https://github.com/ipfs/go-ipfs/issues/5380
             if (offset > int.MaxValue)
@@ -206,33 +206,36 @@ namespace Ipfs.Http
                 $"length={length}");
         }
 
+        /// <inheritdoc cref="ListAsync"/>
+        public Task<IFileSystemNode> ListFileAsync(string path, CancellationToken cancel = default)
+        {
+            return ListAsync(path, cancel);
+        }
+
         /// <summary>
-        ///   Get information about the file or directory.
+        ///   Get information about the directory.
         /// </summary>
         /// <param name="path">
-        ///   A path to an existing file or directory, such as "QmXarR6rgkQ2fDSHjSY5nM2kuCXKYGViky5nohtwgF65Ec/about"
-        ///   or "QmZTR5bcpQD7cFgTorqxZDYaew1Wqgfbd2ud9QqGPAkK2V"
+        ///   A path to an existing directory, such as "QmZTR5bcpQD7cFgTorqxZDYaew1Wqgfbd2ud9QqGPAkK2V"
         /// </param>
         /// <param name="cancel">
-        ///   Is used to stop the task.  When cancelled, the <see cref="TaskCanceledException"/> is raised.
+        ///   Is used to stop the task. When cancelled, the <see cref="TaskCanceledException"/> is raised.
         /// </param>
         /// <returns></returns>
-        public async Task<IFileSystemNode> ListFileAsync(string path, CancellationToken cancel = default(CancellationToken))
+        public async Task<IFileSystemNode> ListAsync(string path, CancellationToken cancel = default)
         {
-            var json = await ipfs.DoCommandAsync("file/ls", cancel, path);
+            var json = await ipfs.DoCommandAsync("ls", cancel, path);
             var r = JObject.Parse(json);
-            var hash = (string)r["Arguments"][path];
-            var o = (JObject)r["Objects"][hash];
+            var o = (JObject)r["Objects"]?[0];
+
             var node = new FileSystemNode()
             {
                 Id = (string)o["Hash"],
-                Size = (long)o["Size"],
-                IsDirectory = (string)o["Type"] == "Directory",
-                Links = new FileSystemLink[0],
-                IpfsClient = ipfs
+                IsDirectory = true,
+                Links = Array.Empty<FileSystemLink>(),
             };
-            var links = o["Links"] as JArray;
-            if (links != null)
+
+            if (o["Links"] is JArray links)
             {
                 node.Links = links
                     .Select(l => new FileSystemLink()
@@ -247,7 +250,7 @@ namespace Ipfs.Http
             return node;
         }
 
-        public Task<Stream> GetAsync(string path, bool compress = false, CancellationToken cancel = default(CancellationToken))
+        public Task<Stream> GetAsync(string path, bool compress = false, CancellationToken cancel = default)
         {
             return ipfs.PostDownloadAsync("get", cancel, path, $"compress={compress}");
         }
