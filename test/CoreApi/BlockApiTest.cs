@@ -16,14 +16,17 @@ namespace Ipfs.Http
         private byte[] blob = Encoding.UTF8.GetBytes("blorb");
 
         [TestMethod]
-        public void Put_Bytes()
+        public async Task Put_Bytes()
         {
-            var cid = ipfs.Block.PutAsync(blob).Result;
+            var cid = await ipfs.Block.PutAsync(blob);
             Assert.AreEqual(id, (string)cid);
 
-            var data = ipfs.Block.GetAsync(cid).Result;
+            var data = await ipfs.Block.GetAsync(cid);
             Assert.AreEqual(blob.Length, data.Size);
-            CollectionAssert.AreEqual(blob, data.DataBytes);
+
+            var stream = await ipfs.FileSystem.ReadFileAsync(cid);
+            var 
+            CollectionAssert.AreEqual(blob, );
         }
 
         [TestMethod]

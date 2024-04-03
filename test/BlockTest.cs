@@ -17,19 +17,5 @@ namespace Ipfs.Http
             CollectionAssert.AreEqual(someBytes, block.DataBytes);
         }
 
-        [TestMethod]
-        public void DataStream()
-        {
-            var block = new Block
-            {
-                DataBytes = someBytes
-            };
-            var stream = block.DataStream;
-            Assert.AreEqual(1, stream.ReadByte());
-            Assert.AreEqual(2, stream.ReadByte());
-            Assert.AreEqual(3, stream.ReadByte());
-            Assert.AreEqual(-1, stream.ReadByte(), "at eof");
-        }
-
     }
 }

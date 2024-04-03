@@ -17,15 +17,9 @@ namespace Ipfs.Http
             this.ipfs = ipfs;
         }
 
-        public async Task<IDataBlock> GetAsync(Cid id, CancellationToken cancel = default(CancellationToken))
+        public async Task<byte[]> GetAsync(Cid id, CancellationToken cancel = default(CancellationToken))
         {
-            var data = await ipfs.DownloadBytesAsync("block/get", cancel, id);
-            return new Block
-            {
-                DataBytes = data,
-                Id = id,
-                Size = data.Length,
-            };
+            return await ipfs.DownloadBytesAsync("block/get", cancel, id);
         }
 
         public async Task<Cid> PutAsync(

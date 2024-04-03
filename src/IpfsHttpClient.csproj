@@ -43,7 +43,7 @@
     <PackageReleaseNotes>
 --- 0.2.0 ---
 [Breaking]
-Inherited breaking changes from IpfsShipyard.Ipfs.Core 0.2.0.
+Inherited breaking changes from IpfsShipyard.Ipfs.Core 0.2.0 and 0.3.0.
 IDataBlock.DataStream was removed. This pattern encouraged async calls behind synchronous property getters, which is a bad practice and can cause deadlocks. Call the async methods directly on the API instead.
 The obsolete IFileSystemApi.ListFileAsync was removed due to prior deprecation and removal in Kubo 0.26.0. Use IFileSystemApi.ListAsync and MfsApi.StatAsync instead. See https://github.com/ipfs/kubo/issues/7493#issuecomment-2016563729.
 
@@ -57,7 +57,7 @@ Added missing IFileSystemApi.ListAsync. Doesn't fully replace the removed IFileS
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="IpfsShipyard.Ipfs.Core" Version="0.2.0" />
+    <PackageReference Include="IpfsShipyard.Ipfs.Core" Version="0.3.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Multiformats.Base" Version="2.0.2" />
