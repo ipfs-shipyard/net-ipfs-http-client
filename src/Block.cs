@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
 namespace Ipfs.Http
 {
@@ -7,43 +6,18 @@ namespace Ipfs.Http
     [DataContract]
     public class Block : IDataBlock
     {
-        long? size;
-
-        /// <inheritdoc />
-        [DataMember]
-        public Cid Id { get; set; }
-
-        /// <inheritdoc />
-        [DataMember]
+        /// <summary>
+        ///  The data of the block.
+        /// </summary>
         public byte[] DataBytes { get; set; }
 
         /// <inheritdoc />
-        public Stream DataStream
-        {
-            get
-            {
-                return new MemoryStream(DataBytes, false);
-            }
-        }
+        [DataMember]
+        public required Cid Id { get; set; }
 
         /// <inheritdoc />
         [DataMember]
-        public long Size
-        {
-            get
-            {
-                if (size.HasValue)
-                {
-                    return size.Value;
-                }
-                return DataBytes.Length;
-            }
-            set
-            {
-                size = value;
-            }
-        }
-
+        public required long Size { get; set; }
     }
 
 }

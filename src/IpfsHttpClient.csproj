@@ -9,8 +9,9 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
     <!-- https://semver.org/spec/v2.0.0.html -->
-    <Version>0.1.0</Version>
+    <Version>0.2.0</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
+    <LangVersion>12.0</LangVersion>
 
     <!-- Nuget specs -->
     <PackageId>IpfsShipyard.Ipfs.Http.Client</PackageId>
@@ -39,6 +40,16 @@
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>.pdb;$(AllowedOutputExtensionsInPackageBuildOutputFolder)</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <PackageReleaseNotes>
+--- 0.2.0 ---
+[Breaking]
+Inherited breaking changes from IpfsShipyard.Ipfs.Core 0.2.0 and 0.3.0.
+IDataBlock.DataStream was removed. This pattern encouraged async calls behind synchronous property getters, which is a bad practice and can cause deadlocks. Call the async methods directly on the API instead.
+The obsolete IFileSystemApi.ListFileAsync was removed due to prior deprecation and removal in Kubo 0.26.0. Use IFileSystemApi.ListAsync and MfsApi.StatAsync instead. See https://github.com/ipfs/kubo/issues/7493#issuecomment-2016563729.
+
+[New]
+Added missing IFileSystemApi.ListAsync. Doesn't fully replace the removed IFileSystemApi.ListFileAsync, but is a step in the right direction. See https://github.com/ipfs/kubo/issues/7493#issuecomment-2016563729.
+    </PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -46,10 +57,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="IpfsShipyard.Ipfs.Core" Version="0.1.0" />
+    <PackageReference Include="IpfsShipyard.Ipfs.Core" Version="0.3.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Multiformats.Base" Version="2.0.2" />
+    <PackageReference Include="PolySharp" Version="1.14.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>

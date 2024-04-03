@@ -236,7 +236,6 @@ namespace Ipfs.Http
                 var xfiles = new FileSystemNode
                 {
                     Id = files[2].Id,
-                    IpfsClient = ipfs,
                 }.Links.ToArray();
                 Assert.AreEqual(2, xfiles.Length);
                 Assert.AreEqual("x.txt", xfiles[0].Name);
@@ -245,7 +244,6 @@ namespace Ipfs.Http
                 var yfiles = new FileSystemNode
                 {
                     Id = xfiles[1].Id,
-                    IpfsClient = ipfs
                 }.Links.ToArray();
                 Assert.AreEqual(1, yfiles.Length);
                 Assert.AreEqual("y.txt", yfiles[0].Name);
@@ -253,9 +251,8 @@ namespace Ipfs.Http
                 var y = new FileSystemNode
                 {
                     Id = yfiles[0].Id,
-                    IpfsClient = ipfs
                 };
-                Assert.AreEqual("y", Encoding.UTF8.GetString(y.DataBytes));
+
                 Assert.AreEqual("y", ipfs.FileSystem.ReadAllTextAsync(dir.Id + "/x/y/y.txt").Result);
             }
             finally

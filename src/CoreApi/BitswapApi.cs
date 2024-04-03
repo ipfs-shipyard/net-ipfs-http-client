@@ -16,11 +16,6 @@ namespace Ipfs.Http
             this.ipfs = ipfs;
         }
 
-        public Task<IDataBlock> GetAsync(Cid id, CancellationToken cancel = default(CancellationToken))
-        {
-            return ipfs.Block.GetAsync(id, cancel);
-        }
-
         public async Task<IEnumerable<Cid>> WantsAsync(MultiHash peer = null, CancellationToken cancel = default(CancellationToken))
         {
             var json = await ipfs.DoCommandAsync("bitswap/wantlist", cancel, peer?.ToString());
@@ -34,11 +29,6 @@ namespace Ipfs.Http
                     var obj = (JObject)k;
                     return Cid.Decode(obj["/"].ToString());
                 });
-        }
-
-        public async Task UnwantAsync(Cid id, CancellationToken cancel = default(CancellationToken))
-        {
-            await ipfs.DoCommandAsync("bitswap/unwant", cancel, id);
         }
 
         public async Task<BitswapLedger> LedgerAsync(Peer peer, CancellationToken cancel = default(CancellationToken))
