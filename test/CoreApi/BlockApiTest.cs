@@ -22,11 +22,14 @@ namespace Ipfs.Http
             Assert.AreEqual(id, (string)cid);
 
             var data = await ipfs.Block.GetAsync(cid);
-            Assert.AreEqual(blob.Length, data.Size);
+            Assert.AreEqual<int>(blob.Length, data.Length);
 
             var stream = await ipfs.FileSystem.ReadFileAsync(cid);
-            var 
-            CollectionAssert.AreEqual(blob, );
+            using var memoryStream = new MemoryStream();
+            await stream.CopyToAsync(memoryStream);
+            var bytes = memoryStream.ToArray();
+
+            CollectionAssert.AreEqual(blob, bytes);
         }
 
         [TestMethod]
@@ -36,8 +39,8 @@ namespace Ipfs.Http
             Assert.AreEqual("bafkreiaxnnnb7qz2focittuqq3ya25q7rcv3bqynnczfzako47346wosmu", (string)cid);
 
             var data = ipfs.Block.GetAsync(cid).Result;
-            Assert.AreEqual(blob.Length, data.Size);
-            CollectionAssert.AreEqual(blob, data.DataBytes);
+            Assert.AreEqual<int>(blob.Length, data.Length);
+            CollectionAssert.AreEqual(blob, data);
         }
 
         [TestMethod]
@@ -47,8 +50,8 @@ namespace Ipfs.Http
             Assert.AreEqual("bafkrgqelljziv4qfg5mefz36m2y3h6voaralnw6lwb4f53xcnrf4mlsykkn7vt6eno547tw5ygcz62kxrle45wnbmpbofo5tvu57jvuaf7k7e", (string)cid);
 
             var data = ipfs.Block.GetAsync(cid).Result;
-            Assert.AreEqual(blob.Length, data.Size);
-            CollectionAssert.AreEqual(blob, data.DataBytes);
+            Assert.AreEqual<int>(blob.Length, data.Length);
+            CollectionAssert.AreEqual(blob, data);
         }
 
         [TestMethod]
@@ -72,8 +75,8 @@ namespace Ipfs.Http
             Assert.AreEqual(id, (string)cid);
 
             var data = ipfs.Block.GetAsync(cid).Result;
-            Assert.AreEqual(blob.Length, data.Size);
-            CollectionAssert.AreEqual(blob, data.DataBytes);
+            Assert.AreEqual<int>(blob.Length, data.Length);
+            CollectionAssert.AreEqual(blob, data);
         }
 
         [TestMethod]
@@ -83,8 +86,8 @@ namespace Ipfs.Http
             Assert.AreEqual("bafkreiaxnnnb7qz2focittuqq3ya25q7rcv3bqynnczfzako47346wosmu", (string)cid);
 
             var data = ipfs.Block.GetAsync(cid).Result;
-            Assert.AreEqual(blob.Length, data.Size);
-            CollectionAssert.AreEqual(blob, data.DataBytes);
+            Assert.AreEqual(blob.Length, data.Length);
+            CollectionAssert.AreEqual(blob, data);
         }
 
         [TestMethod]
@@ -94,8 +97,8 @@ namespace Ipfs.Http
             Assert.AreEqual("bafkrgqelljziv4qfg5mefz36m2y3h6voaralnw6lwb4f53xcnrf4mlsykkn7vt6eno547tw5ygcz62kxrle45wnbmpbofo5tvu57jvuaf7k7e", (string)cid);
 
             var data = ipfs.Block.GetAsync(cid).Result;
-            Assert.AreEqual(blob.Length, data.Size);
-            CollectionAssert.AreEqual(blob, data.DataBytes);
+            Assert.AreEqual<int>(blob.Length, data.Length);
+            CollectionAssert.AreEqual(blob, data);
         }
 
         [TestMethod]
@@ -117,10 +120,9 @@ namespace Ipfs.Http
         {
             var _ = ipfs.Block.PutAsync(blob).Result;
             var block = ipfs.Block.GetAsync(id).Result;
-            Assert.AreEqual(id, (string)block.Id);
-            CollectionAssert.AreEqual(blob, block.DataBytes);
+            CollectionAssert.AreEqual(blob, block);
+
             var blob1 = new byte[blob.Length];
-            block.DataStream.Read(blob1, 0, blob1.Length);
             CollectionAssert.AreEqual(blob, blob1);
         }
 
