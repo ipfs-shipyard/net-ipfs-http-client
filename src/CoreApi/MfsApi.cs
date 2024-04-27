@@ -109,6 +109,21 @@ namespace Ipfs.Http
         }
 
         /// <inheritdoc />
+        public async Task<Stream> ReadFileStreamAsync(string path, long? offset = null, long? count = null, CancellationToken cancel = default)
+        {
+            if (count == 0)
+                count = int.MaxValue; // go-ipfs only accepts int lengths
+
+            List<string> args = new List<string>();
+            if (offset != null)
+                args.Add($"offset={offset.Value}");
+            if (offset != null)
+                args.Add($"count={count.Value}");
+
+            return await ipfs.PostDownloadAsync("files/read", cancel, path, args?.ToArray());
+        }
+
+        /// <inheritdoc />
         public async Task RemoveAsync(string path, bool? recursive = null, bool? force = null, CancellationToken cancel = default)
         {
             List<string> args = new List<string>();
