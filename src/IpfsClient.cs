@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Ipfs.Http
 {
@@ -59,7 +60,8 @@ namespace Ipfs.Http
             var assembly = typeof(IpfsClient).GetTypeInfo().Assembly;
             var version = assembly.GetName().Version;
 
-            UserAgent = string.Format("{0}/{1}.{2}.{3}", assembly.GetName().Name, version.Major, version.Minor, version.Revision);
+            UserAgent = string.Format("{0}/{1}.{2}.{3}", assembly.GetName().Name, version.Major, version.Minor,
+                version.Revision);
             TrustedPeers = new TrustedPeerCollection(this);
 
             Bootstrap = new BootstrapApi(this);
@@ -229,7 +231,7 @@ namespace Ipfs.Http
                         if (HttpMessageHandler is HttpClientHandler handler && handler.SupportsAutomaticDecompression)
                         {
                             handler.AutomaticDecompression = DecompressionMethods.GZip
-                                | DecompressionMethods.Deflate;
+                                                             | DecompressionMethods.Deflate;
                         }
 
                         api = new HttpClient(HttpMessageHandler)
@@ -241,6 +243,7 @@ namespace Ipfs.Http
                     }
                 }
             }
+
             return api;
         }
 
@@ -271,7 +274,8 @@ namespace Ipfs.Http
         /// <exception cref="HttpRequestException">
         ///   When the IPFS server indicates an error.
         /// </exception>
-        public async Task<string> DoCommandAsync(string command, CancellationToken cancel, string arg = null, params string[] options)
+        public async Task<string> DoCommandAsync(string command, CancellationToken cancel, string arg = null,
+            params string[] options)
         {
             var url = BuildCommand(command, arg, options);
 
@@ -282,6 +286,34 @@ namespace Ipfs.Http
 
                 return body;
             }
+        }
+
+        /// <summary>
+        /// Executes /api/v0/add command
+        /// See details here - https://docs.ipfs.tech/reference/kubo/rpc/#api-v0-add
+        /// </summary>
+        /// <param name="path">FileSystem path</param>
+        /// <param name="cancel">Cancellation token</param>
+        /// <param name="arg">Args</param>
+        /// <param name="options">Options</param>
+        /// <returns>Response</returns>
+        public async Task<string> DoAddCommand(string path, CancellationToken cancel, string arg = null,
+            params string[] options)
+        {
+            var url = BuildCommand("add", arg, options);
+
+            var content = new MultipartFormDataContent();
+
+            content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
+            {
+                Name = "\"file\"",
+                FileName = $"\"{HttpUtility.UrlEncode(path)}\""
+            };
+
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/x-directory");
+            content.Add(new StringContent(path), "path");
+
+            return await DoCommandAsync(url, content, cancel);
         }
 
         internal Task DoCommandAsync(Uri url, byte[] bytes, CancellationToken cancel)
@@ -299,13 +331,14 @@ namespace Ipfs.Http
             return DoCommandAsync(url, new StringContent(str), cancel);
         }
 
-        internal async Task DoCommandAsync(Uri url, HttpContent content, CancellationToken cancel)
+        internal async Task<string> DoCommandAsync(Uri url, HttpContent content, CancellationToken cancel)
         {
-            using (var response = await Api().PostAsync(url, new MultipartFormDataContent { { content, "\"file\"" } }, cancel))
-            {
-                await ThrowOnErrorAsync(response);
-                var body = await response.Content.ReadAsStringAsync();
-            }
+            using var response =
+                await Api().PostAsync(url, new MultipartFormDataContent {{content, "\"file\""}}, cancel);
+
+            await ThrowOnErrorAsync(response);
+            var body = await response.Content.ReadAsStringAsync();
+            return body;
         }
 
 
@@ -339,7 +372,8 @@ namespace Ipfs.Http
         /// <exception cref="HttpRequestException">
         ///   When the IPFS server indicates an error.
         /// </exception>
-        public async Task<T> DoCommandAsync<T>(string command, CancellationToken cancel, string arg = null, params string[] options)
+        public async Task<T> DoCommandAsync<T>(string command, CancellationToken cancel, string arg = null,
+            params string[] options)
         {
             var json = await DoCommandAsync(command, cancel, arg, options);
             return JsonConvert.DeserializeObject<T>(json);
@@ -367,7 +401,8 @@ namespace Ipfs.Http
         /// <exception cref="HttpRequestException">
         ///   When the IPFS server indicates an error.
         /// </exception>
-        public async Task<Stream> PostDownloadAsync(string command, CancellationToken cancel, string arg = null, params string[] options)
+        public async Task<Stream> PostDownloadAsync(string command, CancellationToken cancel, string arg = null,
+            params string[] options)
         {
             var url = BuildCommand(command, arg, options);
 
@@ -402,7 +437,8 @@ namespace Ipfs.Http
         /// <exception cref="HttpRequestException">
         ///   When the IPFS server indicates an error.
         /// </exception>
-        public async Task<Stream> DownloadAsync(string command, CancellationToken cancel, string arg = null, params string[] options)
+        public async Task<Stream> DownloadAsync(string command, CancellationToken cancel, string arg = null,
+            params string[] options)
         {
             var url = BuildCommand(command, arg, options);
 
@@ -435,7 +471,8 @@ namespace Ipfs.Http
         /// <exception cref="HttpRequestException">
         ///   When the IPFS server indicates an error.
         /// </exception>
-        public async Task<byte[]> DownloadBytesAsync(string command, CancellationToken cancel, string arg = null, params string[] options)
+        public async Task<byte[]> DownloadBytesAsync(string command, CancellationToken cancel, string arg = null,
+            params string[] options)
         {
             var url = BuildCommand(command, arg, options);
 
@@ -473,7 +510,8 @@ namespace Ipfs.Http
         /// <exception cref="HttpRequestException">
         ///   When the IPFS server indicates an error.
         /// </exception>
-        public async Task<String> UploadAsync(string command, CancellationToken cancel, Stream data, string name, params string[] options)
+        public async Task<String> UploadAsync(string command, CancellationToken cancel, Stream data, string name,
+            params string[] options)
         {
             var content = new MultipartFormDataContent();
             var streamContent = new StreamContent(data);
@@ -495,6 +533,7 @@ namespace Ipfs.Http
                 return json;
             }
         }
+
         /// <summary>
         ///   Perform an <see href="https://ipfs.io/docs/api/">IPFS API command</see> that
         ///   requires uploading of a "file".
@@ -523,7 +562,8 @@ namespace Ipfs.Http
         /// <exception cref="HttpRequestException">
         ///   When the IPFS server indicates an error.
         /// </exception>
-        public async Task<Stream> Upload2Async(string command, CancellationToken cancel, Stream data, string name, params string[] options)
+        public async Task<Stream> Upload2Async(string command, CancellationToken cancel, Stream data, string name,
+            params string[] options)
         {
             var content = new MultipartFormDataContent();
             var streamContent = new StreamContent(data);
@@ -543,7 +583,8 @@ namespace Ipfs.Http
         /// <summary>
         ///  TODO
         /// </summary>
-        public async Task<String> UploadAsync(string command, CancellationToken cancel, byte[] data, params string[] options)
+        public async Task<String> UploadAsync(string command, CancellationToken cancel, byte[] data,
+            params string[] options)
         {
             var content = new MultipartFormDataContent();
             var streamContent = new ByteArrayContent(data);
@@ -593,17 +634,21 @@ namespace Ipfs.Http
             try
             {
                 var res = JsonConvert.DeserializeObject<dynamic>(body);
-                message = (string)res.Message;
+                message = (string) res.Message;
             }
-            catch { }
+            catch
+            {
+            }
 
             throw new HttpRequestException(message);
         }
 
         /// <inheritdoc />
-        public IAsyncEnumerable<PingResult> Ping(MultiHash peer, int count = 10, CancellationToken cancel = new CancellationToken()) => Generic.Ping(peer, count, cancel);
+        public IAsyncEnumerable<PingResult> Ping(MultiHash peer, int count = 10,
+            CancellationToken cancel = new CancellationToken()) => Generic.Ping(peer, count, cancel);
 
         /// <inheritdoc />
-        public IAsyncEnumerable<PingResult> Ping(MultiAddress address, int count = 10, CancellationToken cancel = new CancellationToken()) => Generic.Ping(address, count, cancel);
+        public IAsyncEnumerable<PingResult> Ping(MultiAddress address, int count = 10,
+            CancellationToken cancel = new CancellationToken()) => Generic.Ping(address, count, cancel);
     }
 }
