@@ -316,7 +316,10 @@ namespace Ipfs.Http
 
             string GetFileName(string cPath)
             {
-                var relativePath = Path.GetRelativePath(upperLevelFolder, cPath);
+                // var relativePath = Path.GetRelativePath(upperLevelFolder, cPath);
+                // var relativePath = Path.join(upperLevelFolder, cPath);
+
+                var relativePath = cPath.Replace(upperLevelFolder, "");
                 return $"{Uri.EscapeDataString(relativePath)}";
             }
 
@@ -345,7 +348,7 @@ namespace Ipfs.Http
             var strBody = await response.Content.ReadAsStringAsync();
 
             var result = strBody
-                .Split("\n")
+                .Split('\n')
                 .Where(x => !string.IsNullOrWhiteSpace(x))
                 .Select(JsonConvert.DeserializeObject<IpfsFile>)
                 .ToList();
