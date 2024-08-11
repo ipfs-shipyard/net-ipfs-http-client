@@ -3,8 +3,7 @@ using System.Runtime.Serialization;
 namespace Ipfs.Http;
 
 /// <summary>
-/// AddResponse
-/// {"Name":"var","Hash":"QmPypQtsKqpUC6QzufU1ZfaPw6Kj4eN459aBMzbcfdnPAN","Size":"288"}
+/// IpfsFile
 /// </summary>
 [DataContract]
 public class IpfsFile
