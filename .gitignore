@@ -4,6 +4,7 @@
 # Ide
 
 .idea
+.env
 
 # User-specific files
 *.suo

@@ -6,6 +6,7 @@
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <DebugType>full</DebugType>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
 
     <!-- https://semver.org/spec/v2.0.0.html -->
     <Version>0.5.0</Version>
@@ -71,6 +72,10 @@ The obsolete IFileSystemApi.ListFileAsync was removed due to prior deprecation a
 Added missing IFileSystemApi.ListAsync. Doesn't fully replace the removed IFileSystemApi.ListFileAsync, but is a step in the right direction. See https://github.com/ipfs/kubo/issues/7493#issuecomment-2016563729.
     </PackageReleaseNotes>
   </PropertyGroup>
+  <ItemGroup>
+	  <None Include="../README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <None Include="icon.png" Pack="true" PackagePath="\" />
