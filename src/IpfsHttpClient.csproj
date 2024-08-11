@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <AssemblyName>IpfsShipyard.Ipfs.Http.Client</AssemblyName>
     <RootNamespace>Ipfs.Http</RootNamespace>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
@@ -27,6 +26,7 @@
     <IncludeSymbols>True</IncludeSymbols>
     <PackageProjectUrl>https://github.com/ipfs-shipyard/net-ipfs-http-client</PackageProjectUrl>
     <PackageIcon>icon.png</PackageIcon>
+    <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup>

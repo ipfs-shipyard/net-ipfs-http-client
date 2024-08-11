@@ -188,27 +188,30 @@ namespace Ipfs.Http
         }
 
         [TestMethod]
-        public async Task DoAddCommand()
+        public void DoAddCommand()
         {
             var ipfs = TestFixture.Ipfs;
             var temp = MakeTemp();
 
             try
             {
-                var response = await ipfs.DoAddCommand(temp, CancellationToken.None);
+                var response = ipfs.DoAddCommand(
+                    temp,
+                    CancellationToken.None
+                ).Result.ToList();
 
-                // Assert.IsTrue(dir.IsDirectory);
-                //
-                // var files = dir.Links.ToArray();
-                // Assert.AreEqual(2, files.Length);
-                // Assert.AreEqual("alpha.txt", files[0].Name);
-                // Assert.AreEqual("beta.txt", files[1].Name);
-                //
-                // Assert.AreEqual("alpha", ipfs.FileSystem.ReadAllTextAsync(files[0].Id).Result);
-                // Assert.AreEqual("beta", ipfs.FileSystem.ReadAllTextAsync(files[1].Id).Result);
-                //
-                // Assert.AreEqual("alpha", ipfs.FileSystem.ReadAllTextAsync(dir.Id + "/alpha.txt").Result);
-                // Assert.AreEqual("beta", ipfs.FileSystem.ReadAllTextAsync(dir.Id + "/beta.txt").Result);
+                Assert.AreEqual(3, response.Count(), "Expected 3 files to be added");
+
+                var parentDir = new DirectoryInfo(temp);
+
+                if (parentDir == null)
+                {
+                    throw new Exception("Parent directory is null");
+                }
+
+                Assert.AreEqual(Path.Join(parentDir.Name, "alpha.txt"), response[0].Name);
+                Assert.AreEqual(Path.Join(parentDir.Name, "beta.txt"), response[1].Name);
+                Assert.AreEqual(parentDir.Name, response[2].Name);
             }
             finally
             {

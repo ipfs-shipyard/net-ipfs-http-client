@@ -1,8 +1,7 @@
-﻿using Ipfs.CoreApi;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -10,7 +9,8 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
+using Ipfs.CoreApi;
+using Newtonsoft.Json;
 
 namespace Ipfs.Http
 {
@@ -297,23 +297,60 @@ namespace Ipfs.Http
         /// <param name="arg">Args</param>
         /// <param name="options">Options</param>
         /// <returns>Response</returns>
-        public async Task<string> DoAddCommand(string path, CancellationToken cancel, string arg = null,
+        public async Task<ICollection<IpfsFile>> DoAddCommand(
+            string path,
+            CancellationToken cancel,
+            string arg = null,
             params string[] options)
         {
             var url = BuildCommand("add", arg, options);
 
+            var dirInfo = new DirectoryInfo(Path.GetFullPath(path));
+
+            if (!dirInfo.Exists)
+            {
+                throw new Exception("Directory does not exists");
+            }
+
+            var upperLevelFolder = dirInfo.Parent?.FullName ?? Path.GetFullPath(path);
+
+            string GetFileName(string cPath)
+            {
+                var relativePath = Path.GetRelativePath(upperLevelFolder, cPath);
+                return $"{Uri.EscapeDataString(relativePath)}";
+            }
+
+            ByteArrayContent addFile(FileInfo cFile)
+            {
+                var content = new ByteArrayContent(File.ReadAllBytes(cFile.FullName));
+                content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
+                {
+                    Name = "file",
+                    FileName = GetFileName(cFile.FullName)
+                };
+                content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+                return content;
+            }
+
             var content = new MultipartFormDataContent();
 
-            content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
+            foreach (var file in dirInfo.EnumerateFiles())
             {
-                Name = "\"file\"",
-                FileName = $"\"{HttpUtility.UrlEncode(path)}\""
-            };
+                content.Add(addFile(file));
+            }
 
-            content.Headers.ContentType = new MediaTypeHeaderValue("application/x-directory");
-            content.Add(new StringContent(path), "path");
+            using var response = await Api().PostAsync(url, content, cancel);
+            await ThrowOnErrorAsync(response);
 
-            return await DoCommandAsync(url, content, cancel);
+            var strBody = await response.Content.ReadAsStringAsync();
+
+            var result = strBody
+                .Split("\n")
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .Select(JsonConvert.DeserializeObject<IpfsFile>)
+                .ToList();
+
+            return result;
         }
 
         internal Task DoCommandAsync(Uri url, byte[] bytes, CancellationToken cancel)
