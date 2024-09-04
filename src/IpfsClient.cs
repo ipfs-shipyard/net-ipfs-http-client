@@ -165,7 +165,8 @@ namespace Ipfs.Http
 
         
         /// <inheritdoc />
-        public IFilestoreApi FileSystem { get; private set; }
+        public IFilestoreApi Filestore { get; private set; }
+
 
         /// <inheritdoc />
         public IMfsApi Mfs { get; private set; }
