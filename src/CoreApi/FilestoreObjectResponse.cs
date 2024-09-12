@@ -20,7 +20,8 @@ namespace Ipfs.Http.CoreApi
         /// <summary>
         /// The key to the Filestore.
         /// </summary>
-        public IFilesStoreKey Key { get; set; }
+        
+        public Key Key { get; set; }
 
         /// <summary>
         /// The response offset.

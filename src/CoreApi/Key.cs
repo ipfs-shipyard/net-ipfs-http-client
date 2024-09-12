@@ -12,7 +12,7 @@ namespace Ipfs.Http.CoreApi
         /// Key value.
         /// </summary>
         [JsonProperty("/")]
-        public string Value { get; set; }
+        public string _ { get; set; }
     }
 
 }
