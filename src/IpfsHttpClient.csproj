@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
@@ -9,7 +9,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
     <!-- https://semver.org/spec/v2.0.0.html -->
-    <Version>0.5.0</Version>
+    <Version>0.5.1</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <LangVersion>12.0</LangVersion>
 
@@ -41,6 +41,13 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>.pdb;$(AllowedOutputExtensionsInPackageBuildOutputFolder)</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <PackageReleaseNotes>
+--- 0.5.1 ---
+[New]
+Added support for MfsWriteOptions.Flush in MfsApi.WriteAsync.
+
+[Improvements]
+Updated to IpfsShipyard.Ipfs.Core 0.6.1.
+
 --- 0.5.0 ---
 [Breaking]
 Inherited breaking changes from IpfsShipyard.Ipfs.Core 0.6.0. See release notes for details.
