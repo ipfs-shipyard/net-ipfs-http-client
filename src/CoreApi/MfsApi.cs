@@ -211,6 +211,8 @@ namespace Ipfs.Http
                 opts.Add($"raw-leaves={options.RawLeaves.ToString().ToLower()}");
             if (options.Hash != null && options.Hash != MultiHash.DefaultAlgorithmName)
                 opts.Add($"hash=${options.Hash}");
+            if (options.Flush.HasValue)
+                opts.Add($"flush={options.Flush.ToString().ToLower()}");
 
             if (string.IsNullOrEmpty(path) || !path.StartsWith("/"))
                 throw new ArgumentException("Argument path is required and must start with '/'.");
