@@ -20,7 +20,6 @@ namespace Ipfs.Http
         /// <summary>
         /// The key to the Filestore.
         /// </summary>
-        
         public FilestoreKey Key { get; set; }
 
         /// <summary>
