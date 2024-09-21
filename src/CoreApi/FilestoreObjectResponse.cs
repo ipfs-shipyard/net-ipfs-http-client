@@ -1,11 +1,11 @@
 ﻿using Ipfs.CoreApi;
 
-namespace Ipfs.Http.CoreApi
+namespace Ipfs.Http
 {
     /// <summary>
     /// Model holding response to <see cref="IFilestoreApi"/>.
     /// </summary>
-    public class FilestoreObjectResponse : IFilesStoreApiObjectResponse
+    public class FilestoreObjectResponse : IFilestoreApiObjectResponse
     {
         /// <summary>
         /// Holds any error message.
@@ -21,7 +21,7 @@ namespace Ipfs.Http.CoreApi
         /// The key to the Filestore.
         /// </summary>
         
-        public Key Key { get; set; }
+        public FilestoreKey Key { get; set; }
 
         /// <summary>
         /// The response offset.

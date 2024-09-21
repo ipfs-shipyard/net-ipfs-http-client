@@ -1,12 +1,12 @@
 ﻿using Ipfs.CoreApi;
 using Newtonsoft.Json;
 
-namespace Ipfs.Http.CoreApi
+namespace Ipfs.Http
 {
     /// <summary>
     /// Model for the hold filestore key
     /// </summary>
-    public class Key : IFilesStoreKey
+    public class FilestoreKey : IFilesStoreKey
     {
         /// <summary>
         /// Key value.

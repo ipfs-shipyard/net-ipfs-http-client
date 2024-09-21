@@ -1,5 +1,4 @@
 ﻿using Ipfs.CoreApi;
-using Ipfs.Http.CoreApi;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
