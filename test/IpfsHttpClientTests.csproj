@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	<TargetFrameworks>net6.0</TargetFrameworks>
 
     <IsPackable>false</IsPackable>
     <DebugType>full</DebugType>
     <RootNamespace>Ipfs.Http</RootNamespace>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
