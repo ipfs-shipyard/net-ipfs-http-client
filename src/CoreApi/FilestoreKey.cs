@@ -6,7 +6,7 @@ namespace Ipfs.Http
     /// <summary>
     /// Model for the hold filestore key
     /// </summary>
-    public class FilestoreKey : IFilesStoreKey
+    public class FilestoreKey : IFilestoreKey
     {
         /// <summary>
         /// Key value.
