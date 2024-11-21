@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Runtime.Serialization;
 
 namespace Ipfs.Http
 {
     /// <summary>
-    ///   The IPFS <see href="https://github.com/ipfs/specs/tree/master/merkledag">MerkleDag</see> is the datastructure at the heart of IPFS. It is an acyclic directed graph whose edges are hashes.
+    ///   The IPFS <see href="https://github.com/ipfs/specs/blob/main/MERKLE_DAG.md">MerkleDag</see> is the datastructure at the heart of IPFS.
+    ///   It is an acyclic directed graph whose edges are hashes.
     /// </summary>
     /// <remarks>
     ///   Initially an <b>MerkleNode</b> is just constructed with its Cid.
@@ -14,11 +14,9 @@ namespace Ipfs.Http
     [DataContract]
     public class MerkleNode : IMerkleNode<IMerkleLink>, IEquatable<MerkleNode>
     {
-        bool hasBlockStats;
-        long blockSize;
+        ulong blockSize;
         string name;
-        IEnumerable<IMerkleLink> links;
-        IpfsClient ipfsClient;
+        IEnumerable<IMerkleLink> links = [];
 
         /// <summary>
         ///   Creates a new instance of the <see cref="MerkleNode"/> with the specified
@@ -67,26 +65,6 @@ namespace Ipfs.Http
             Id = link.Id;
             Name = link.Name;
             blockSize = link.Size;
-            hasBlockStats = true;
-        }
-
-        internal IpfsClient IpfsClient
-        {
-            get
-            {
-                if (ipfsClient == null)
-                {
-                    lock (this)
-                    {
-                        ipfsClient = new IpfsClient();
-                    }
-                }
-                return ipfsClient;
-            }
-            set
-            {
-                ipfsClient = value;
-            }
         }
 
         /// <inheritdoc />
@@ -103,67 +81,19 @@ namespace Ipfs.Http
             set { name = value ?? string.Empty; }
         }
 
-        /// <summary>
-        ///   Size of the raw, encoded node.
-        /// </summary>
-        [DataMember]
-        public long BlockSize
-        {
-            get
-            {
-                GetBlockStats();
-                return blockSize;
-            }
-        }
-
         /// <inheritdoc />
-        /// <seealso cref="BlockSize"/>
+        /// <seealso cref="blockSize"/>
         [DataMember]
-        public long Size
-        {
-            get
-            {
-                return BlockSize;
-            }
-        }
-
+        public ulong Size => blockSize;
 
         /// <inheritdoc />
         [DataMember]
-        public IEnumerable<IMerkleLink> Links
-        {
-            get
-            {
-                if (links == null)
-                {
-                    links = IpfsClient.Object.LinksAsync(Id).Result;
-                }
-
-                return links;
-            }
-        }
+        public IEnumerable<IMerkleLink> Links => links;
 
         /// <inheritdoc />
         public IMerkleLink ToLink(string name = null)
         {
-            return new DagLink(name ?? Name, Id, BlockSize);
-        }
-
-        /// <summary>
-        ///   Get block statistics about the node, <c>ipfs block stat <i>key</i></c>
-        /// </summary>
-        /// <remarks>
-        ///   The object stats include the block stats.
-        /// </remarks>
-        void GetBlockStats()
-        {
-            if (hasBlockStats)
-                return;
-
-            var stats = IpfsClient.Block.StatAsync(Id).Result;
-            blockSize = stats.Size;
-
-            hasBlockStats = true;
+            return new DagLink(name ?? Name, Id, Size);
         }
 
         /// <inheritdoc />
@@ -214,14 +144,5 @@ namespace Ipfs.Http
         {
             return "/ipfs/" + Id;
         }
-
-        /// <summary>
-        ///  TODO
-        /// </summary>
-        static public implicit operator MerkleNode(string hash)
-        {
-            return new MerkleNode(hash);
-        }
-
     }
 }

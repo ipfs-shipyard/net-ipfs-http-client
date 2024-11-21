@@ -1,13 +1,11 @@
 ﻿using Ipfs.CoreApi;
-using Ipfs.Http.CoreApi;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
+using System.Runtime.CompilerServices;
 using System.Threading;
-using System.Threading.Tasks;
+
+#nullable enable
 
 namespace Ipfs.Http
 {
@@ -23,27 +21,62 @@ namespace Ipfs.Http
         }
 
         /// <inheritdoc/>
-        public async Task<IFilestoreApiObjectResponse> ListAsync(string cid, bool fileOrder, CancellationToken token)
+        public async IAsyncEnumerable<FilestoreItem> ListAsync(string? cid = null, bool? fileOrder = null, [EnumeratorCancellation] CancellationToken token = default)
         {
-            var json = await ipfs.DoCommandAsync("filestore/ls", token, cid, fileOrder.ToString());
+            string[] options = [];
 
-            return JsonConvert.DeserializeObject<FilestoreObjectResponse>(json);
+            if (fileOrder is not null)
+                options = [..options, $"file-order={fileOrder.ToString().ToLowerInvariant()}"];
+            
+            using var stream = await ipfs.PostDownloadAsync("filestore/ls", token, cid, options);
+
+            // Read line-by-line
+            using var reader = new StreamReader(stream);
+            while (!reader.EndOfStream)
+            {
+                token.ThrowIfCancellationRequested();
+                var json = await reader.ReadLineAsync();
+
+                var res = JsonConvert.DeserializeObject<FilestoreItem>(json);
+                if (res is not null)
+                    yield return res;
+            }
         }
 
         /// <inheritdoc/>
-        public async Task<IFilestoreApiObjectResponse> VerifyObjectsAsync(string cid, bool fileOrder, CancellationToken token)
+        public async IAsyncEnumerable<FilestoreItem> VerifyObjectsAsync(string? cid = null, bool? fileOrder = null, [EnumeratorCancellation] CancellationToken token = default)
         {
-            var json = await ipfs.DoCommandAsync("filestore/verify", token, cid, fileOrder.ToString());
+            using var stream = await ipfs.PostDownloadAsync("filestore/verify", token, cid, $"{fileOrder}");
 
-            return JsonConvert.DeserializeObject<FilestoreObjectResponse>(json);
+            // Read line-by-line
+            using var reader = new StreamReader(stream);
+            while (!reader.EndOfStream)
+            {
+                token.ThrowIfCancellationRequested();
+                var json = await reader.ReadLineAsync();
+
+                var res = JsonConvert.DeserializeObject<FilestoreItem>(json);
+                if (res is not null)
+                    yield return res;
+            }
         }
 
         /// <inheritdoc/>
-        public async Task<IDupsResponse> DupsAsync(CancellationToken token)
+        public async IAsyncEnumerable<FilestoreDuplicate> DupsAsync([EnumeratorCancellation] CancellationToken token = default)
         {
-            var json = await ipfs.DoCommandAsync("filestore/dups", token);
+            using var stream = await ipfs.PostDownloadAsync("filestore/dups", token);
 
-            return JsonConvert.DeserializeObject<DupsResponse>(json);
+            // Read line-by-line
+            using var reader = new StreamReader(stream);
+            while (!reader.EndOfStream)
+            {
+                token.ThrowIfCancellationRequested();
+                var json = await reader.ReadLineAsync();
+
+                var res = JsonConvert.DeserializeObject<FilestoreDuplicate>(json);
+                if (res is not null)
+                    yield return res;
+            }
         }
     }
 

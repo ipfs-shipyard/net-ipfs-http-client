@@ -71,9 +71,8 @@ namespace Ipfs.Http
             Dht = new DhtApi(this);
             Swarm = new SwarmApi(this);
             Dag = new DagApi(this);
-            Object = new ObjectApi(this);
             FileSystem = new FileSystemApi(this);
-            FilestoreApi = new FilestoreApi(this);
+            Filestore = new FilestoreApi(this);
             Mfs = new MfsApi(this);
             PubSub = new PubSubApi(this);
             Key = new KeyApi(this);
@@ -159,14 +158,10 @@ namespace Ipfs.Http
         public ISwarmApi Swarm { get; private set; }
 
         /// <inheritdoc />
-        public IObjectApi Object { get; private set; }
-
-        /// <inheritdoc />
         public IFileSystemApi FileSystem { get; private set; }
 
-
         /// <inheritdoc />
-        public IFilestoreApi FilestoreApi { get; private set; }
+        public IFilestoreApi Filestore { get; private set; }
 
         /// <inheritdoc />
         public IMfsApi Mfs { get; private set; }
@@ -177,7 +172,7 @@ namespace Ipfs.Http
         /// <inheritdoc />
         public IKeyApi Key { get; private set; }
 
-        Uri BuildCommand(string command, string arg = null, params string[] options)
+        internal Uri BuildCommand(string command, string arg = null, params string[] options)
         {
             var url = "/api/v0/" + command;
             var q = new StringBuilder();
@@ -223,7 +218,7 @@ namespace Ipfs.Http
         /// <remarks>
         ///   Only one client is needed.  Its thread safe.
         /// </remarks>
-        HttpClient Api()
+        internal HttpClient Api()
         {
             if (api == null)
             {
@@ -233,13 +228,12 @@ namespace Ipfs.Http
                     {
                         if (HttpMessageHandler is HttpClientHandler handler && handler.SupportsAutomaticDecompression)
                         {
-                            handler.AutomaticDecompression = DecompressionMethods.GZip
-                                | DecompressionMethods.Deflate;
+                            handler.AutomaticDecompression = DecompressionMethods.GZip;
                         }
 
                         api = new HttpClient(HttpMessageHandler)
                         {
-                            Timeout = Timeout.InfiniteTimeSpan
+                            Timeout = Timeout.InfiniteTimeSpan,
                         };
 
                         api.DefaultRequestHeaders.Add("User-Agent", UserAgent);
@@ -500,6 +494,7 @@ namespace Ipfs.Http
                 return json;
             }
         }
+
         /// <summary>
         ///   Perform an <see href="https://ipfs.io/docs/api/">IPFS API command</see> that
         ///   requires uploading of a "file".
@@ -579,7 +574,7 @@ namespace Ipfs.Http
         /// <remarks>
         ///   The API server returns an JSON error in the form <c>{ "Message": "...", "Code": ... }</c>.
         /// </remarks>
-        async Task<bool> ThrowOnErrorAsync(HttpResponseMessage response)
+        internal async Task<bool> ThrowOnErrorAsync(HttpResponseMessage response)
         {
             if (response.IsSuccessStatusCode)
                 return true;

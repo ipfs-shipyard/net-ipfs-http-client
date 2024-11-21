@@ -23,7 +23,7 @@ namespace Ipfs.Http
         ///   of the block.
         /// </value>
         [DataMember]
-        public long Size { get; set; }
+        public ulong Size { get; set; }
 
         /// <summary>
         ///   Determines if the link is a directory (folder).
