@@ -9,7 +9,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
     <!-- https://semver.org/spec/v2.0.0.html -->
-    <Version>0.5.1</Version>
+    <Version>0.6.0</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <LangVersion>12.0</LangVersion>
 
@@ -41,6 +41,24 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>.pdb;$(AllowedOutputExtensionsInPackageBuildOutputFolder)</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <PackageReleaseNotes>
+--- 0.6.0 ---
+[Breaking]
+Fixed WebRTC-Direct support added in Kubo 0.30.0.
+Removed the Object API completely, since Kubo replaced it with the DAG API and no longer offers it.
+Refactored the FileSystem API to:
+  - Enable proper directory uploads via a new `AddAsync` method that takes File and Folder parts separately.
+  - Bring `FileAddOptions` fully up-to-date with modern Kubo.
+  - Remove `AddDirectoryAsync` (used missing Object API).
+Updated several types to use one of int, long or ulong for Size matching the Kubo API.
+MerkleNode no longer has a static internal IpfsClient, and several properties that performed async calls synchronously were adjusted or removed.
+Block.DataBytes was removed as it was unused by any known interface or implementation.
+
+[New]
+Added FilestoreApi and the corresponding types.
+
+[Improvements]
+FilesystemApi.AddAsync now uses chunked transfer encoding, enabling uploading of very large files or groups of files.
+
 --- 0.5.1 ---
 [New]
 Added support for MfsWriteOptions.Flush in MfsApi.WriteAsync.
@@ -84,7 +102,7 @@ Added missing IFileSystemApi.ListAsync. Doesn't fully replace the removed IFileS
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="IpfsShipyard.Ipfs.Core" Version="0.6.1" />
+    <PackageReference Include="IpfsShipyard.Ipfs.Core" Version="0.7.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Multiformats.Base" Version="2.0.2" />
@@ -93,5 +111,4 @@ Added missing IFileSystemApi.ListAsync. Doesn't fully replace the removed IFileS
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-
 </Project>

@@ -25,14 +25,6 @@ namespace Ipfs.Http
         }
 
         [TestMethod]
-        public void FromString()
-        {
-            var a = new MerkleNode(IpfsInfo);
-            var b = (MerkleNode)IpfsInfo;
-            Assert.AreEqual(a, b);
-        }
-
-        [TestMethod]
         public void NullHash()
         {
             ExceptionAssert.Throws<ArgumentNullException>(() => new MerkleNode((string)null));
@@ -47,7 +39,7 @@ namespace Ipfs.Http
             var link = new MerkleNode(node.Links.First());
             Assert.AreEqual(link.Id, node.Links.First().Id);
             Assert.AreEqual(link.Name, node.Links.First().Name);
-            Assert.AreEqual(link.BlockSize, node.Links.First().Size);
+            Assert.AreEqual(link.Size, node.Links.First().Size);
         }
 
         [TestMethod]
@@ -57,7 +49,7 @@ namespace Ipfs.Http
             var link = node.ToLink();
             Assert.AreEqual(link.Id, node.Id);
             Assert.AreEqual(link.Name, node.Name);
-            Assert.AreEqual(link.Size, node.BlockSize);
+            Assert.AreEqual(link.Size, node.Size);
 
         }
 

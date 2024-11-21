@@ -125,143 +125,6 @@ namespace Ipfs.Http
         }
 
         [TestMethod]
-        public async Task Add_SizeChunking()
-        {
-            var ipfs = TestFixture.Ipfs;
-            var options = new AddFileOptions
-            {
-                ChunkSize = 3
-            };
-            options.Pin = true;
-            var node = await ipfs.FileSystem.AddTextAsync("hello world", options);
-            Assert.AreEqual("QmVVZXWrYzATQdsKWM4knbuH5dgHFmrRqW3nJfDgdWrBjn", (string)node.Id);
-            Assert.AreEqual(false, node.IsDirectory);
-
-            var links = (await ipfs.Object.LinksAsync(node.Id)).ToArray();
-            Assert.AreEqual(4, links.Length);
-            Assert.AreEqual("QmevnC4UDUWzJYAQtUSQw4ekUdqDqwcKothjcobE7byeb6", (string)links[0].Id);
-            Assert.AreEqual("QmTdBogNFkzUTSnEBQkWzJfQoiWbckLrTFVDHFRKFf6dcN", (string)links[1].Id);
-            Assert.AreEqual("QmPdmF1n4di6UwsLgW96qtTXUsPkCLN4LycjEUdH9977d6", (string)links[2].Id);
-            Assert.AreEqual("QmXh5UucsqF8XXM8UYQK9fHXsthSEfi78kewr8ttpPaLRE", (string)links[3].Id);
-
-            var text = await ipfs.FileSystem.ReadAllTextAsync(node.Id);
-            Assert.AreEqual("hello world", text);
-        }
-
-        [TestMethod]
-        public async Task Add_Raw()
-        {
-            var ipfs = TestFixture.Ipfs;
-            var options = new AddFileOptions
-            {
-                RawLeaves = true
-            };
-            var node = await ipfs.FileSystem.AddTextAsync("hello world", options);
-            Assert.AreEqual("bafkreifzjut3te2nhyekklss27nh3k72ysco7y32koao5eei66wof36n5e", (string)node.Id);
-            Assert.AreEqual(11, node.Size);
-
-            var text = await ipfs.FileSystem.ReadAllTextAsync(node.Id);
-            Assert.AreEqual("hello world", text);
-        }
-
-        [TestMethod]
-        public async Task Add_RawAndChunked()
-        {
-            var ipfs = TestFixture.Ipfs;
-            var options = new AddFileOptions
-            {
-                RawLeaves = true,
-                ChunkSize = 3
-            };
-            var node = await ipfs.FileSystem.AddTextAsync("hello world", options);
-            Assert.AreEqual("QmUuooB6zEhMmMaBvMhsMaUzar5gs5KwtVSFqG4C1Qhyhs", (string)node.Id);
-            Assert.AreEqual(false, node.IsDirectory);
-
-            var links = (await ipfs.Object.LinksAsync(node.Id)).ToArray();
-            Assert.AreEqual(4, links.Length);
-            Assert.AreEqual("bafkreigwvapses57f56cfow5xvoua4yowigpwcz5otqqzk3bpcbbjswowe", (string)links[0].Id);
-            Assert.AreEqual("bafkreiew3cvfrp2ijn4qokcp5fqtoknnmr6azhzxovn6b3ruguhoubkm54", (string)links[1].Id);
-            Assert.AreEqual("bafkreibsybcn72tquh2l5zpim2bba4d2kfwcbpzuspdyv2breaq5efo7tq", (string)links[2].Id);
-            Assert.AreEqual("bafkreihfuch72plvbhdg46lef3n5zwhnrcjgtjywjryyv7ffieyedccchu", (string)links[3].Id);
-
-            var text = await ipfs.FileSystem.ReadAllTextAsync(node.Id);
-            Assert.AreEqual("hello world", text);
-        }
-
-        [TestMethod]
-        public void AddDirectory()
-        {
-            var ipfs = TestFixture.Ipfs;
-            var temp = MakeTemp();
-            try
-            {
-                var dir = ipfs.FileSystem.AddDirectoryAsync(temp, false).Result;
-                Assert.IsTrue(dir.IsDirectory);
-
-                var files = dir.Links.ToArray();
-                Assert.AreEqual(2, files.Length);
-                Assert.AreEqual("alpha.txt", files[0].Name);
-                Assert.AreEqual("beta.txt", files[1].Name);
-
-                Assert.AreEqual("alpha", ipfs.FileSystem.ReadAllTextAsync(files[0].Id).Result);
-                Assert.AreEqual("beta", ipfs.FileSystem.ReadAllTextAsync(files[1].Id).Result);
-
-                Assert.AreEqual("alpha", ipfs.FileSystem.ReadAllTextAsync(dir.Id + "/alpha.txt").Result);
-                Assert.AreEqual("beta", ipfs.FileSystem.ReadAllTextAsync(dir.Id + "/beta.txt").Result);
-            }
-            finally
-            {
-                DeleteTemp(temp);
-            }
-        }
-
-        [TestMethod]
-        public void AddDirectoryRecursive()
-        {
-            var ipfs = TestFixture.Ipfs;
-            var temp = MakeTemp();
-            try
-            {
-                var dir = ipfs.FileSystem.AddDirectoryAsync(temp, true).Result;
-                Assert.IsTrue(dir.IsDirectory);
-
-                var files = dir.Links.ToArray();
-                Assert.AreEqual(3, files.Length);
-                Assert.AreEqual("alpha.txt", files[0].Name);
-                Assert.AreEqual("beta.txt", files[1].Name);
-                Assert.AreEqual("x", files[2].Name);
-                Assert.AreNotEqual(0, files[0].Size);
-                Assert.AreNotEqual(0, files[1].Size);
-
-                var xfiles = new FileSystemNode
-                {
-                    Id = files[2].Id,
-                }.Links.ToArray();
-                Assert.AreEqual(2, xfiles.Length);
-                Assert.AreEqual("x.txt", xfiles[0].Name);
-                Assert.AreEqual("y", xfiles[1].Name);
-
-                var yfiles = new FileSystemNode
-                {
-                    Id = xfiles[1].Id,
-                }.Links.ToArray();
-                Assert.AreEqual(1, yfiles.Length);
-                Assert.AreEqual("y.txt", yfiles[0].Name);
-
-                var y = new FileSystemNode
-                {
-                    Id = yfiles[0].Id,
-                };
-
-                Assert.AreEqual("y", ipfs.FileSystem.ReadAllTextAsync(dir.Id + "/x/y/y.txt").Result);
-            }
-            finally
-            {
-                DeleteTemp(temp);
-            }
-        }
-
-        [TestMethod]
         public async Task GetTar_EmptyDirectory()
         {
             var ipfs = TestFixture.Ipfs;
@@ -269,7 +132,10 @@ namespace Ipfs.Http
             Directory.CreateDirectory(temp);
             try
             {
-                var dir = ipfs.FileSystem.AddDirectoryAsync(temp, true).Result;
+                IFileSystemNode dir = null;
+                await foreach (var item in ipfs.FileSystem.AddAsync([], [], null, default))
+                    dir = item;
+
                 var dirid = dir.Id.Encode();
 
                 using (var tar = await ipfs.FileSystem.GetAsync(dir.Id))

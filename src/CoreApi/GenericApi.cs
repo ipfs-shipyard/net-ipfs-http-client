@@ -25,6 +25,7 @@ namespace Ipfs.Http
             var stream = await PostDownloadAsync("ping", cancel,
                 peer.ToString(),
                 $"count={count.ToString(CultureInfo.InvariantCulture)}");
+
             return PingResultFromStream(stream);
         }
 
@@ -34,6 +35,7 @@ namespace Ipfs.Http
             var stream = await PostDownloadAsync("ping", cancel,
                 address.ToString(),
                 $"count={count.ToString(CultureInfo.InvariantCulture)}");
+
             return PingResultFromStream(stream);
         }
 

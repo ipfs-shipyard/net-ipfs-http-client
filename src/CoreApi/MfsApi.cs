@@ -59,7 +59,7 @@ namespace Ipfs.Http
                     {
                         Name = (string)l["Name"],
                         Id = (string)l["Hash"],
-                        Size = (long)l["Size"],
+                        Size = (ulong)l["Size"],
                         IsDirectory = (int)l["Type"] == 1,
                     })
                     .ToArray();

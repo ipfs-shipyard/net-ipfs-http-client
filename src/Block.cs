@@ -1,23 +1,19 @@
 ﻿using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
 namespace Ipfs.Http
 {
     /// <inheritdoc />
     [DataContract]
-    public class Block : IDataBlock
+    public record Block : IBlockStat
     {
-        /// <summary>
-        ///  The data of the block.
-        /// </summary>
-        public byte[] DataBytes { get; set; }
-
         /// <inheritdoc />
         [DataMember]
+        [JsonProperty("Key")]
         public required Cid Id { get; set; }
 
         /// <inheritdoc />
         [DataMember]
-        public required long Size { get; set; }
+        public required int Size { get; set; }
     }
-
 }

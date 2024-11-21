@@ -18,13 +18,13 @@ namespace Ipfs.Http
         [TestMethod]
         public async Task Put_Bytes()
         {
-            var cid = await ipfs.Block.PutAsync(blob);
-            Assert.AreEqual(id, (string)cid);
+            var blockStat = await ipfs.Block.PutAsync(blob);
+            Assert.AreEqual(id, (string)blockStat.Id);
 
-            var data = await ipfs.Block.GetAsync(cid);
+            var data = await ipfs.Block.GetAsync(blockStat.Id);
             Assert.AreEqual<int>(blob.Length, data.Length);
 
-            var stream = await ipfs.FileSystem.ReadFileAsync(cid);
+            var stream = await ipfs.FileSystem.ReadFileAsync(blockStat.Id);
             using var memoryStream = new MemoryStream();
             await stream.CopyToAsync(memoryStream);
             var bytes = memoryStream.ToArray();
@@ -35,10 +35,10 @@ namespace Ipfs.Http
         [TestMethod]
         public void Put_Bytes_ContentType()
         {
-            var cid = ipfs.Block.PutAsync(blob, contentType: "raw").Result;
-            Assert.AreEqual("bafkreiaxnnnb7qz2focittuqq3ya25q7rcv3bqynnczfzako47346wosmu", (string)cid);
+            var blockStat = ipfs.Block.PutAsync(blob).Result;
+            Assert.AreEqual("bafkreiaxnnnb7qz2focittuqq3ya25q7rcv3bqynnczfzako47346wosmu", (string)blockStat.Id);
 
-            var data = ipfs.Block.GetAsync(cid).Result;
+            var data = ipfs.Block.GetAsync(blockStat.Id).Result;
             Assert.AreEqual<int>(blob.Length, data.Length);
             CollectionAssert.AreEqual(blob, data);
         }
@@ -46,10 +46,10 @@ namespace Ipfs.Http
         [TestMethod]
         public void Put_Bytes_Hash()
         {
-            var cid = ipfs.Block.PutAsync(blob, "raw", "sha2-512").Result;
-            Assert.AreEqual("bafkrgqelljziv4qfg5mefz36m2y3h6voaralnw6lwb4f53xcnrf4mlsykkn7vt6eno547tw5ygcz62kxrle45wnbmpbofo5tvu57jvuaf7k7e", (string)cid);
+            var blockStat = ipfs.Block.PutAsync(blob, "raw", "sha2-512").Result;
+            Assert.AreEqual("bafkrgqelljziv4qfg5mefz36m2y3h6voaralnw6lwb4f53xcnrf4mlsykkn7vt6eno547tw5ygcz62kxrle45wnbmpbofo5tvu57jvuaf7k7e", (string)blockStat.Id);
 
-            var data = ipfs.Block.GetAsync(cid).Result;
+            var data = ipfs.Block.GetAsync(blockStat.Id).Result;
             Assert.AreEqual<int>(blob.Length, data.Length);
             CollectionAssert.AreEqual(blob, data);
         }
@@ -58,23 +58,23 @@ namespace Ipfs.Http
         public void Put_Bytes_Pinned()
         {
             var data1 = new byte[] { 23, 24, 127 };
-            var cid1 = ipfs.Block.PutAsync(data1, contentType: "raw", pin: true).Result;
+            var cid1 = ipfs.Block.PutAsync(data1, pin: true).Result;
             var pins = ipfs.Pin.ListAsync().Result;
-            Assert.IsTrue(pins.Any(pin => pin == cid1));
+            Assert.IsTrue(pins.Any(pin => pin == cid1.Id));
 
             var data2 = new byte[] { 123, 124, 27 };
-            var cid2 = ipfs.Block.PutAsync(data2, contentType: "raw", pin: false).Result;
+            var cid2 = ipfs.Block.PutAsync(data2, pin: false).Result;
             pins = ipfs.Pin.ListAsync().Result;
-            Assert.IsFalse(pins.Any(pin => pin == cid2));
+            Assert.IsFalse(pins.Any(pin => pin == cid2.Id));
         }
 
         [TestMethod]
         public void Put_Stream()
         {
-            var cid = ipfs.Block.PutAsync(new MemoryStream(blob)).Result;
-            Assert.AreEqual(id, (string)cid);
+            var blockStat = ipfs.Block.PutAsync(new MemoryStream(blob)).Result;
+            Assert.AreEqual(id, (string)blockStat.Id);
 
-            var data = ipfs.Block.GetAsync(cid).Result;
+            var data = ipfs.Block.GetAsync(blockStat.Id).Result;
             Assert.AreEqual<int>(blob.Length, data.Length);
             CollectionAssert.AreEqual(blob, data);
         }
@@ -82,10 +82,10 @@ namespace Ipfs.Http
         [TestMethod]
         public void Put_Stream_ContentType()
         {
-            var cid = ipfs.Block.PutAsync(new MemoryStream(blob), contentType: "raw").Result;
-            Assert.AreEqual("bafkreiaxnnnb7qz2focittuqq3ya25q7rcv3bqynnczfzako47346wosmu", (string)cid);
+            var blockStat = ipfs.Block.PutAsync(new MemoryStream(blob)).Result;
+            Assert.AreEqual("bafkreiaxnnnb7qz2focittuqq3ya25q7rcv3bqynnczfzako47346wosmu", (string)blockStat.Id);
 
-            var data = ipfs.Block.GetAsync(cid).Result;
+            var data = ipfs.Block.GetAsync(blockStat.Id).Result;
             Assert.AreEqual(blob.Length, data.Length);
             CollectionAssert.AreEqual(blob, data);
         }
@@ -93,10 +93,10 @@ namespace Ipfs.Http
         [TestMethod]
         public void Put_Stream_Hash()
         {
-            var cid = ipfs.Block.PutAsync(new MemoryStream(blob), "raw", "sha2-512").Result;
-            Assert.AreEqual("bafkrgqelljziv4qfg5mefz36m2y3h6voaralnw6lwb4f53xcnrf4mlsykkn7vt6eno547tw5ygcz62kxrle45wnbmpbofo5tvu57jvuaf7k7e", (string)cid);
+            var blockStat = ipfs.Block.PutAsync(new MemoryStream(blob), "raw", "sha2-512").Result;
+            Assert.AreEqual("bafkrgqelljziv4qfg5mefz36m2y3h6voaralnw6lwb4f53xcnrf4mlsykkn7vt6eno547tw5ygcz62kxrle45wnbmpbofo5tvu57jvuaf7k7e", (string)blockStat.Id);
 
-            var data = ipfs.Block.GetAsync(cid).Result;
+            var data = ipfs.Block.GetAsync(blockStat.Id).Result;
             Assert.AreEqual<int>(blob.Length, data.Length);
             CollectionAssert.AreEqual(blob, data);
         }
@@ -105,14 +105,14 @@ namespace Ipfs.Http
         public void Put_Stream_Pinned()
         {
             var data1 = new MemoryStream(new byte[] { 23, 24, 127 });
-            var cid1 = ipfs.Block.PutAsync(data1, contentType: "raw", pin: true).Result;
+            var cid1 = ipfs.Block.PutAsync(data1, pin: true).Result;
             var pins = ipfs.Pin.ListAsync().Result;
-            Assert.IsTrue(pins.Any(pin => pin == cid1));
+            Assert.IsTrue(pins.Any(pin => pin == cid1.Id));
 
             var data2 = new MemoryStream(new byte[] { 123, 124, 27 });
-            var cid2 = ipfs.Block.PutAsync(data2, contentType: "raw", pin: false).Result;
+            var cid2 = ipfs.Block.PutAsync(data2, pin: false).Result;
             pins = ipfs.Pin.ListAsync().Result;
-            Assert.IsFalse(pins.Any(pin => pin == cid2));
+            Assert.IsFalse(pins.Any(pin => pin == cid2.Id));
         }
 
         [TestMethod]

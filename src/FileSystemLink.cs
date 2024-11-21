@@ -1,4 +1,6 @@
-﻿namespace Ipfs.Http
+﻿using Newtonsoft.Json;
+
+namespace Ipfs.Http
 {
     /// <summary>
     ///     A link to another file system node in IPFS.
@@ -9,9 +11,10 @@
         public string Name { get; set; }
 
         /// <inheritdoc />
+        [JsonProperty("Hash")]
         public Cid Id { get; set; }
 
         /// <inheritdoc />
-        public long Size { get; set; }
+        public ulong Size { get; set; }
     }
 }
