@@ -1,4 +1,5 @@
-﻿using Ipfs.CoreApi;
+﻿using Google.Protobuf;
+using Ipfs.CoreApi;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,18 @@ namespace Ipfs.Http
         public async Task<IEnumerable<Cid>> ListAsync(CancellationToken cancel = default(CancellationToken))
         {
             var json = await ipfs.DoCommandAsync("pin/ls", cancel);
+            var keys = (JObject)(JObject.Parse(json)["Keys"]);
+            return keys
+                .Properties()
+                .Select(p => (Cid)p.Name);
+        }
+
+        public async Task<IEnumerable<Cid>> ListAsync(PinType type, CancellationToken cancel = default(CancellationToken))
+        {
+            var typeOpt = type.ToString().ToLowerInvariant();
+            var json = await ipfs.DoCommandAsync("pin/ls", cancel,
+                null,
+                $"type={typeOpt}");
             var keys = (JObject)(JObject.Parse(json)["Keys"]);
             return keys
                 .Properties()
