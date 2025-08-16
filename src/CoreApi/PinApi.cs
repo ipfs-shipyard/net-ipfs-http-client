@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System;
 
 namespace Ipfs.Http
 {
@@ -17,15 +18,22 @@ namespace Ipfs.Http
             this.ipfs = ipfs;
         }
 
-        public async Task<IEnumerable<Cid>> AddAsync(string path, bool recursive = true, CancellationToken cancel = default(CancellationToken))
+        public async Task<IEnumerable<Cid>> AddAsync(string path, PinAddOptions options, CancellationToken cancel = default)
         {
-            var opts = "recursive=" + recursive.ToString().ToLowerInvariant();
-            var json = await ipfs.DoCommandAsync("pin/add", cancel, path, opts);
-            return ((JArray)JObject.Parse(json)["Pins"])
-                .Select(p => (Cid)(string)p);
+            options ??= new PinAddOptions();
+            var optList = new List<string>
+            {
+                "recursive=" + options.Recursive.ToString().ToLowerInvariant()
+            };
+            if (!string.IsNullOrEmpty(options.Name))
+            {
+                optList.Add("name=" + options.Name);
+            }
+            var json = await ipfs.DoCommandAsync("pin/add", cancel, path, optList.ToArray());
+            return ((JArray)JObject.Parse(json)["Pins"]) .Select(p => (Cid)(string)p);
         }
 
-        public async Task<IEnumerable<Cid>> ListAsync(CancellationToken cancel = default(CancellationToken))
+        public async Task<IEnumerable<Cid>> ListAsync(CancellationToken cancel = default)
         {
             var json = await ipfs.DoCommandAsync("pin/ls", cancel);
             var keys = (JObject)(JObject.Parse(json)["Keys"]);

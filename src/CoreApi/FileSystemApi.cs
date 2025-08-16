@@ -270,7 +270,7 @@ namespace Ipfs.Http
                 opts.Add($"nocopy={options.NoCopy.ToString().ToLowerInvariant()}");
 
             if (options.Pin is not null)
-                opts.Add("pin=false");
+                opts.Add($"pin={options.Pin.ToString().ToLowerInvariant()}");
 
             if (options.Wrap is not null)
                 opts.Add($"wrap-with-directory={options.Wrap.ToString().ToLowerInvariant()}");
