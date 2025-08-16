@@ -125,6 +125,22 @@ namespace Ipfs.Http
         }
 
         [TestMethod]
+        public async Task Add_WithPinName_PinsNamed()
+        {
+            var ipfs = TestFixture.Ipfs;
+            var name = $"add-pin-{Guid.NewGuid()}";
+            var node = await ipfs.FileSystem.AddTextAsync("named pin via add", new AddFileOptions { Pin = true, PinName = name });
+
+            var items = await ipfs.Pin.ListAsync(new PinListOptions { Names = true }).ToArrayAsync();
+            var match = items.FirstOrDefault(i => i.Cid == node.Id);
+            Assert.IsNotNull(match, "Expected CID to be pinned");
+            Assert.AreEqual(name, match!.Name, "Expected pin name to match");
+
+            // cleanup
+            await ipfs.Pin.RemoveAsync(node.Id);
+        }
+
+        [TestMethod]
         public async Task GetTar_EmptyDirectory()
         {
             var ipfs = TestFixture.Ipfs;
