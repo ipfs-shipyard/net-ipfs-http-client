@@ -95,8 +95,8 @@ namespace Ipfs.Http
             var data = new MemoryStream(new byte[] { 11, 22, 33 });
             var options = new AddFileOptions { Pin = false };
             var node = ipfs.FileSystem.AddAsync(data, "", options).Result;
-            var pins = ipfs.Pin.ListAsync().Result;
-            Assert.IsFalse(pins.Any(pin => pin == node.Id));
+            var pins = ipfs.Pin.ListAsync().ToEnumerable();
+            Assert.IsFalse(pins.Any(pin => pin.Cid == node.Id));
         }
 
         [TestMethod]

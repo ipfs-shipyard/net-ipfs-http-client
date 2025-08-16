@@ -16,7 +16,7 @@ namespace Ipfs.Http
         // Publicly accessible client and API URI for tests.
         public static IpfsClient Ipfs { get; private set; } = null!;
         public static Uri? ApiUri { get; private set; }
-    private static KuboBootstrapper? Node;
+        public static KuboBootstrapper? Node;
 
         [AssemblyInitialize]
         public static void AssemblyInit(TestContext context)
