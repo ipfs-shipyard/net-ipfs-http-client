@@ -95,8 +95,8 @@ namespace Ipfs.Http
             var data = new MemoryStream(new byte[] { 11, 22, 33 });
             var options = new AddFileOptions { Pin = false };
             var node = ipfs.FileSystem.AddAsync(data, "", options).Result;
-            var pins = ipfs.Pin.ListAsync().Result;
-            Assert.IsFalse(pins.Any(pin => pin == node.Id));
+            var pins = ipfs.Pin.ListAsync().ToEnumerable();
+            Assert.IsFalse(pins.Any(pin => pin.Cid == node.Id));
         }
 
         [TestMethod]
@@ -122,6 +122,22 @@ namespace Ipfs.Http
             {
                 File.Delete(path);
             }
+        }
+
+        [TestMethod]
+        public async Task Add_WithPinName_PinsNamed()
+        {
+            var ipfs = TestFixture.Ipfs;
+            var name = $"add-pin-{Guid.NewGuid()}";
+            var node = await ipfs.FileSystem.AddTextAsync("named pin via add", new AddFileOptions { Pin = true, PinName = name });
+
+            var items = await ipfs.Pin.ListAsync(new PinListOptions { Names = true }).ToArrayAsync();
+            var match = items.FirstOrDefault(i => i.Cid == node.Id);
+            Assert.IsNotNull(match, "Expected CID to be pinned");
+            Assert.AreEqual(name, match!.Name, "Expected pin name to match");
+
+            // cleanup
+            await ipfs.Pin.RemoveAsync(node.Id);
         }
 
         [TestMethod]

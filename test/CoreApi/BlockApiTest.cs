@@ -59,13 +59,13 @@ namespace Ipfs.Http
         {
             var data1 = new byte[] { 23, 24, 127 };
             var cid1 = ipfs.Block.PutAsync(data1, pin: true).Result;
-            var pins = ipfs.Pin.ListAsync().Result;
-            Assert.IsTrue(pins.Any(pin => pin == cid1.Id));
+            var pins = ipfs.Pin.ListAsync().ToEnumerable();
+            Assert.IsTrue(pins.Any(pin => pin.Cid == cid1.Id));
 
             var data2 = new byte[] { 123, 124, 27 };
             var cid2 = ipfs.Block.PutAsync(data2, pin: false).Result;
-            pins = ipfs.Pin.ListAsync().Result;
-            Assert.IsFalse(pins.Any(pin => pin == cid2.Id));
+            pins = ipfs.Pin.ListAsync().ToEnumerable();
+            Assert.IsFalse(pins.Any(pin => pin.Cid == cid2.Id));
         }
 
         [TestMethod]
@@ -106,13 +106,13 @@ namespace Ipfs.Http
         {
             var data1 = new MemoryStream(new byte[] { 23, 24, 127 });
             var cid1 = ipfs.Block.PutAsync(data1, pin: true).Result;
-            var pins = ipfs.Pin.ListAsync().Result;
-            Assert.IsTrue(pins.Any(pin => pin == cid1.Id));
+            var pins = ipfs.Pin.ListAsync().ToEnumerable();
+            Assert.IsTrue(pins.Any(pin => pin.Cid == cid1.Id));
 
             var data2 = new MemoryStream(new byte[] { 123, 124, 27 });
             var cid2 = ipfs.Block.PutAsync(data2, pin: false).Result;
-            pins = ipfs.Pin.ListAsync().Result;
-            Assert.IsFalse(pins.Any(pin => pin == cid2.Id));
+            pins = ipfs.Pin.ListAsync().ToEnumerable();
+            Assert.IsFalse(pins.Any(pin => pin.Cid == cid2.Id));
         }
 
         [TestMethod]

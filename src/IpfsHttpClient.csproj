@@ -102,7 +102,7 @@ Added missing IFileSystemApi.ListAsync. Doesn't fully replace the removed IFileS
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="IpfsShipyard.Ipfs.Core" Version="0.7.0" />
+    <PackageReference Include="IpfsShipyard.Ipfs.Core" Version="0.8.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Multiformats.Base" Version="2.0.2" />

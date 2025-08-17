@@ -154,23 +154,32 @@ namespace Ipfs.Http
 
         public Task<Stream> ExportAsync(string path, CancellationToken cancellationToken = default)
         {
-            return ipfs.DownloadAsync("dag/export", cancellationToken, path);
+            // Kubo expects POST for dag/export
+            return ipfs.PostDownloadAsync("dag/export", cancellationToken, path);
         }
 
         public async Task<CarImportOutput> ImportAsync(Stream stream, bool? pinRoots = null, bool stats = false, CancellationToken cancellationToken = default)
         {
-            string[] options = [
-                $"pin-roots={pinRoots.ToString().ToLowerInvariant()}",
-                $"stats={stats.ToString().ToLowerInvariant()}"
-            ];
+            // Respect Kubo default (pin roots = true) by omitting the flag when null.
+            var optionsList = new System.Collections.Generic.List<string>();
+            if (pinRoots.HasValue)
+                optionsList.Add($"pin-roots={pinRoots.Value.ToString().ToLowerInvariant()}");
+
+            optionsList.Add($"stats={stats.ToString().ToLowerInvariant()}");
+            var options = optionsList.ToArray();
 
             using var resultStream = await ipfs.Upload2Async("dag/import", cancellationToken, stream, null, options);
 
             // Read line-by-line
             using var reader = new StreamReader(resultStream);
 
-            // First output is always of type CarImportOutput
+            // First output line may be absent on older Kubo when pin-roots=false
             var json = await reader.ReadLineAsync();
+            if (string.IsNullOrEmpty(json))
+            {
+                return new CarImportOutput();
+            }
+
             var res = JsonConvert.DeserializeObject<CarImportOutput>(json);
             if (res is null)
                 throw new InvalidDataException($"The response did not deserialize to {nameof(CarImportOutput)}.");
@@ -179,11 +188,14 @@ namespace Ipfs.Http
             if (stats)
             {
                 json = await reader.ReadLineAsync();
-                var importStats = JsonConvert.DeserializeObject<CarImportStats>(json);
-                if (importStats is null)
-                    throw new InvalidDataException($"The response did not deserialize a {nameof(CarImportStats)}.");
+                if (!string.IsNullOrEmpty(json))
+                {
+                    var importStats = JsonConvert.DeserializeObject<CarImportStats>(json);
+                    if (importStats is null)
+                        throw new InvalidDataException($"The response did not deserialize a {nameof(CarImportStats)}.");
 
-                res.Stats = importStats;
+                    res.Stats = importStats;
+                }
             }
 
             return res;

@@ -270,7 +270,10 @@ namespace Ipfs.Http
                 opts.Add($"nocopy={options.NoCopy.ToString().ToLowerInvariant()}");
 
             if (options.Pin is not null)
-                opts.Add("pin=false");
+                opts.Add($"pin={options.Pin.ToString().ToLowerInvariant()}");
+                
+            if (!string.IsNullOrEmpty(options.PinName))
+                opts.Add($"pin-name={options.PinName}");
 
             if (options.Wrap is not null)
                 opts.Add($"wrap-with-directory={options.Wrap.ToString().ToLowerInvariant()}");
@@ -291,10 +294,10 @@ namespace Ipfs.Http
                 opts.Add("progress=true");
 
             if (options.Hash is not null)
-                opts.Add($"hash=${options.Hash}");
+                opts.Add($"hash={options.Hash}");
 
             if (options.FsCache is not null)
-                opts.Add($"fscache={options.Wrap.ToString().ToLowerInvariant()}");
+                opts.Add($"fscache={options.FsCache.ToString().ToLowerInvariant()}");
 
             if (options.ToFiles is not null)
                 opts.Add($"to-files={options.ToFiles}");
