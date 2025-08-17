@@ -25,11 +25,12 @@ namespace Ipfs.Http
             {
                 OwlCore.Diagnostics.Logger.MessageReceived += (sender, args) => context.WriteLine(args.Message);
 
-                // Ensure the test runner has provided a deployment directory to use for working folders.
-                Assert.IsNotNull(context.DeploymentDirectory);
+                // Prefer the deployment directory when provided; otherwise fall back to a temp folder.
+                var deploymentDir = context.DeploymentDirectory ?? Path.Combine(Path.GetTempPath(), "IpfsHttpClientTests", "Work");
+                Directory.CreateDirectory(deploymentDir);
 
                 // Create a working folder and start a fresh Kubo node with default bootstrap peers.
-                var workingFolder = SafeCreateWorkingFolder(new SystemFolder(context.DeploymentDirectory), typeof(TestFixture).Namespace ?? "test").GetAwaiter().GetResult();
+                var workingFolder = SafeCreateWorkingFolder(new SystemFolder(deploymentDir), typeof(TestFixture).Namespace ?? "test").GetAwaiter().GetResult();
 
                 // Use non-default ports to avoid conflicts with any locally running node.
                 int apiPort = 11501;
@@ -52,13 +53,18 @@ namespace Ipfs.Http
         {
             var nodeRepo = (SystemFolder)await workingDirectory.CreateFolderAsync(nodeRepoName, overwrite: true);
 
+            // Use a temp folder for the Kubo binary cache to avoid limited space on the deployment drive.
+            var binCachePath = Path.Combine(Path.GetTempPath(), "IpfsHttpClientTests", "KuboBin");
+            Directory.CreateDirectory(binCachePath);
+            var binCacheFolder = new SystemFolder(binCachePath);
+
             var node = new KuboBootstrapper(nodeRepo.Path)
             {
                 ApiUri = new Uri($"http://127.0.0.1:{apiPort}"),
                 GatewayUri = new Uri($"http://127.0.0.1:{gatewayPort}"),
                 RoutingMode = DhtRoutingMode.AutoClient,
                 LaunchConflictMode = BootstrapLaunchConflictMode.Relaunch,
-                BinaryWorkingFolder = workingDirectory,
+                BinaryWorkingFolder = binCacheFolder,
                 EnableFilestore = true,
             };
 
