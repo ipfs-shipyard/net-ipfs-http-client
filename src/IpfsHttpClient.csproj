@@ -9,7 +9,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
     <!-- https://semver.org/spec/v2.0.0.html -->
-    <Version>0.7.0</Version>
+    <Version>0.8.0</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <LangVersion>12.0</LangVersion>
 
@@ -41,6 +41,16 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>.pdb;$(AllowedOutputExtensionsInPackageBuildOutputFolder)</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <PackageReleaseNotes>
+--- 0.8.0 ---
+[New]
+IMfsApi: Implemented TouchAsync (set mtime via files/touch) and ChmodAsync (set mode via files/chmod).
+FileSystemNode: Added Mtime, MtimeNsecs, and Mode properties.
+MfsApi.StatAsync: Now parses mtime, mtime nanoseconds, and mode from files/stat response.
+MfsApi.ListAsync: Documented that files/ls does not decode UnixFS Data blobs, so mode/mtime will be null.
+
+[Dependencies]
+Updated to IpfsShipyard.Ipfs.Core 0.9.0.
+
 --- 0.7.0 ---
 [Breaking]
 Pin API aligned with modern Kubo:
