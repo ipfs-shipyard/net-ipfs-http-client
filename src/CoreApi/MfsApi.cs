@@ -1,4 +1,4 @@
-﻿using Ipfs.CoreApi;
+using Ipfs.CoreApi;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -41,6 +41,19 @@ namespace Ipfs.Http
         }
 
         /// <inheritdoc />
+        /// <remarks>
+        ///   <para>
+        ///   The <c>files/ls</c> API iterates the <c>PBNode.Links</c> array of the directory
+        ///   without decoding each child node's UnixFS <c>Data</c> blob. As a result, the
+        ///   <see cref="IFileSystemNode.Mode"/>, <see cref="IFileSystemNode.Mtime"/>, and
+        ///   <see cref="IFileSystemNode.MtimeNsecs"/> properties will always be <c>null</c>
+        ///   for nodes returned by this method.
+        ///   </para>
+        ///   <para>
+        ///   To retrieve UnixFS 1.5 metadata (mode/mtime), use <see cref="StatAsync(string, CancellationToken)"/> on
+        ///   individual paths, which decodes the target node's UnixFS <c>Data</c> blob.
+        ///   </para>
+        /// </remarks>
         public async Task<IEnumerable<IFileSystemNode>> ListAsync(string path, bool? U = null, CancellationToken cancel = default)
         {
             List<string> args = new List<string>() { "long=true" };
@@ -54,6 +67,9 @@ namespace Ipfs.Http
             var links = r["Entries"] as JArray;
             if (links != null)
             {
+                // Note: Mode, Mtime, and MtimeNsecs are intentionally not populated here.
+                // The files/ls API does not decode each child's UnixFS Data blob, so these
+                // fields are not available. Use StatAsync to retrieve UnixFS 1.5 metadata.
                 nodes = links
                     .Select(l => new FileSystemNode()
                     {
@@ -162,6 +178,9 @@ namespace Ipfs.Http
                 Size = (Int64)r["Size"],
                 SizeLocal = (Int64?)r["SizeLocal"] ?? 0,
                 IsDirectory = (string)r["Type"] == "directory",
+                Mode = (string)r["Mode"],
+                Mtime = (long?)r["Mtime"],
+                MtimeNsecs = (int?)r["MtimeNsecs"],
                 WithLocality = ((bool?)r["WithLocality"]) ?? false,
             };
         }
@@ -186,6 +205,31 @@ namespace Ipfs.Http
             {
                 await WriteAsync(path, byteStream, options, cancel);
             }
+        }
+
+/// <inheritdoc />
+        public async Task TouchAsync(string path, DateTimeOffset? mtime = null, CancellationToken cancel = default)
+        {
+            var args = new List<string>();
+            if (mtime.HasValue)
+            {
+                args.Add($"mtime={mtime.Value.ToUnixTimeSeconds()}");
+                long nsecs = (mtime.Value.Ticks % TimeSpan.TicksPerSecond) * 100;
+                if (nsecs > 0)
+                    args.Add($"mtime-nsecs={nsecs}");
+            }
+
+            await ipfs.DoCommandAsync("files/touch", cancel, path, args.ToArray());
+        }
+
+        /// <inheritdoc />
+        public async Task ChmodAsync(string path, string mode, bool? recursive = null, CancellationToken cancel = default)
+        {
+            var args = new List<string> { $"arg={path}" };
+            if (recursive.HasValue)
+                args.Add($"recursive={recursive.Value.ToString().ToLower()}");
+
+            await ipfs.DoCommandAsync("files/chmod", cancel, mode, args.ToArray());
         }
 
         /// <inheritdoc />
@@ -225,3 +269,13 @@ namespace Ipfs.Http
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
