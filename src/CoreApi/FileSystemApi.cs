@@ -1,4 +1,4 @@
-﻿using Ipfs.CoreApi;
+using Ipfs.CoreApi;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -321,3 +321,4 @@ namespace Ipfs.Http
         }
     }
 }
+

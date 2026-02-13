@@ -1,9 +1,23 @@
-﻿using System.Collections.Generic;
+#nullable enable
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace Ipfs.Http
 {
-    /// <inheritdoc />
+    /// <summary>
+    ///   Implementation of <see cref="IFileSystemNode"/> for the HTTP client.
+    /// </summary>
+    /// <remarks>
+    ///   <para>
+    ///   This class represents a decoded UnixFS DAG node. See <see cref="IFileSystemNode"/> for
+    ///   details on the UnixFS specification alignment.
+    ///   </para>
+    ///   <para>
+    ///   The <see cref="Mode"/>, <see cref="Mtime"/>, and <see cref="MtimeNsecs"/> properties
+    ///   are only populated when the node is retrieved via an API that decodes the UnixFS <c>Data</c>
+    ///   blob (e.g., <c>files/stat</c>). Listing APIs do not populate these fields.
+    ///   </para>
+    /// </remarks>
     [DataContract]
     public class FileSystemNode : IFileSystemNode
     {
@@ -25,23 +39,31 @@ namespace Ipfs.Http
         [DataMember]
         public ulong Size { get; set; }
 
-        /// <summary>
-        ///   Determines if the link is a directory (folder).
-        /// </summary>
-        /// <value>
-        ///   <b>true</b> if the link is a directory; Otherwise <b>false</b>,
-        ///   the link is some type of a file.
-        /// </value>
+        /// <inheritdoc />
         [DataMember]
         public bool IsDirectory { get; set; }
 
-        /// <summary>
-        ///   The file name of the IPFS node.
-        /// </summary>
+        /// <inheritdoc />
         [DataMember]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         /// <inheritdoc />
+        [DataMember]
+        public string? Mode { get; set; }
+
+        /// <inheritdoc />
+        [DataMember]
+        public long? Mtime { get; set; }
+
+        /// <inheritdoc />
+        [DataMember]
+        public int? MtimeNsecs { get; set; }
+
+        /// <summary>
+        ///   Converts this node to a <see cref="FileSystemLink"/>.
+        /// </summary>
+        /// <param name="name">Optional name override for the link.</param>
+        /// <returns>A <see cref="FileSystemLink"/> representing this node.</returns>
         public IFileSystemLink ToLink(string name = "")
         {
             var link = new FileSystemLink
